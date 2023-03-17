@@ -1,0 +1,16 @@
+services:
+  server:
+    container_name: nestjs
+    build: .
+    hostname: nestjs
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    networks:
+      - nestjs-network
+    volumes:
+      - ./:/app
+      - .env/:/app
+    restart: unless-stopped
+networks:
+  nestjs-network:
+    driver: bridge

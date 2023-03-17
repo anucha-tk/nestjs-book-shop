@@ -51,6 +51,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^8.0.0",
     "jest": "28.1.2",
+    "joi": "^17.8.4",
     "lint-staged": "^13.2.0",
     "prettier": "^2.3.2",
     "release-it": "^15.9.0",
@@ -82,7 +83,7 @@
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
       "eslint --fix",
-      "prettier --config ./.prettierrc.js --write"
+      "prettier --config ./.prettierrc --write"
     ],
     "**/*.{css,scss,md,html,json}": [
       "prettier --config ./.prettierrc --write"
