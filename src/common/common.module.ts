@@ -12,7 +12,13 @@ import Joi from 'joi';
       envFilePath: ['.env'],
       expandVariables: true,
       validationSchema: Joi.object({
+        // app
         APP_PORT: Joi.number().default(5000).required(),
+        // database
+        DB_HOST: Joi.string().required(),
+        DB_NAME: Joi.string().required(),
+        DB_USER: Joi.string().required(),
+        DB_USER_PWD: Joi.string().required(),
       }),
     }),
   ],

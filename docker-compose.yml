@@ -11,6 +11,29 @@ services:
       - ./:/app
       - .env/:/app
     restart: unless-stopped
+  mongod:
+    container_name: mongo
+    image: mongo:5.0
+    hostname: mongo
+    ports:
+      - 27017:27017
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$DB_ADMIN
+      - MONGO_INITDB_ROOT_PASSWORD=$DB_ADMIN_PWD
+      - MONGO_INITDB_DATABASE=$DB_NAME
+      - MONGO_INITDB_USERNAME=$DB_USER
+      - MONGO_INITDB_PASSWORD=$DB_USER_PWD
+    volumes:
+      - ./addons/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
+      - dbdata:/data/db
+    restart: unless-stopped
+    networks:
+      - nestjs-network
+
 networks:
   nestjs-network:
     driver: bridge
+volumes:
+  dbdata:

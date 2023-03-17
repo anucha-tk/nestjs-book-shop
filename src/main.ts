@@ -7,6 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const port: number = configService.get<number>('app.http.port');
+  const host: string = configService.get<string>('database.host');
+  const databaseName: string = configService.get<string>('database.name');
 
   await app.listen(port);
   const logger = new Logger();
@@ -14,6 +16,8 @@ async function bootstrap() {
   logger.log(`==========================================================`);
 
   logger.log(`Server run on port: ${port}`);
+
+  logger.log(`Database running on ${host}/${databaseName}`, 'NestApplication');
 
   logger.log(`Server running on ${await app.getUrl()}`, 'NestApplication');
 
