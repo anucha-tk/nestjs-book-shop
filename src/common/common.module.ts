@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import Configs from 'src/configs';
 import Joi from 'joi';
+import { MongooseModule } from '@nestjs/mongoose';
+import { DatabaseOptionsService } from './database/services/database.options.services';
+import { DatabaseOptionsModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -20,6 +23,13 @@ import Joi from 'joi';
         DB_USER: Joi.string().required(),
         DB_USER_PWD: Joi.string().required(),
       }),
+    }),
+    MongooseModule.forRootAsync({
+      // connectionName: 'PrimaryConnectionDatabase',
+      inject: [DatabaseOptionsService],
+      imports: [DatabaseOptionsModule],
+      useFactory: (databaseOptionsService: DatabaseOptionsService) =>
+        databaseOptionsService.createMongooseOptions(),
     }),
   ],
 })
