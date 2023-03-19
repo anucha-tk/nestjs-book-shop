@@ -4,7 +4,7 @@ WORKDIR /app
 EXPOSE 3000
 
 COPY package.json yarn.lock ./
-RUN yarn 
+RUN yarn && yarn cache clean
 
 COPY . .
 

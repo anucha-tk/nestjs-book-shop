@@ -11,7 +11,9 @@ services:
       - ./:/app
       - .env/:/app
     restart: unless-stopped
-  mongod:
+    depends_on:
+      - mongodb
+  mongodb:
     container_name: mongo
     image: mongo:5.0
     hostname: mongo
