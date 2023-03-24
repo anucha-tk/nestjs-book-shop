@@ -6,13 +6,21 @@
 - nestjs
 - docker
 
-## Features dev tools
+## Dev tools
 
 - husky
 - commitlint
 - lintstaged
 - commitizen
 - release-it
+
+## Features
+
+- [Auth JWT(salt, password Expired)](https://www.notion.so/Auth-User-JWT-2639381e66b8471e8f789aa81bd1b8ab?pvs=4)
+- [Router](https://www.notion.so/Router-6815812f599340748c49cd7f1616fb12?pvs=4)
+- Roles
+- Error Message
+- Users CRUD
 
 ## pre install
 

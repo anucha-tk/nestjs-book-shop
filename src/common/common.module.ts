@@ -5,6 +5,8 @@ import Joi from 'joi';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseOptionsService } from './database/services/database.options.services';
 import { DatabaseOptionsModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
+import { HelperModule } from './helper/helper.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { DatabaseOptionsModule } from './database/database.module';
       useFactory: (databaseOptionsService: DatabaseOptionsService) =>
         databaseOptionsService.createMongooseOptions(),
     }),
+    HelperModule,
+    AuthModule,
   ],
 })
 export class CommonModule {}
