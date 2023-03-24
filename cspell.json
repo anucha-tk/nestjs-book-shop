@@ -1,5 +1,14 @@
 {
   "version": "0.2",
   "language": "ea",
-  "words": ["nestjs", "Nest", "Inject", "yarn"]
+  "words": [
+    "nestjs",
+    "Nest",
+    "Inject",
+    "yarn",
+    "Pipes",
+    "lean",
+    "lowercase",
+    "Exist"
+  ]
 }
