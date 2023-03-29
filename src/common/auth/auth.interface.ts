@@ -3,3 +3,7 @@ export interface IAuthPassword {
   passwordHash: string;
   passwordExpired: Date;
 }
+
+export interface IAuthPayloadOptions {
+  loginDate: Date;
+}

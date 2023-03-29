@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { plainToInstance } from 'class-transformer';
 import { Model } from 'mongoose';
 import { UserDocument, UserEntity } from '../schemas/user.schema';
-import { UserCreateDto } from '../dto/user.create.dto';
-import { IUserCheckExist } from '../user.interface';
+import { UserPayloadSerialization } from '../serializations/user.payload.serialization';
+import { IUserCheckExist, IUserCreate, IUserDocument } from '../user.interface';
 
 @Injectable()
 export class UserService {
@@ -11,7 +12,7 @@ export class UserService {
     @InjectModel(UserEntity.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async create(userCreateDto: UserCreateDto): Promise<UserDocument> {
+  async create(userCreateDto: IUserCreate): Promise<UserDocument> {
     return new this.userModel(userCreateDto).save();
   }
 
@@ -30,5 +31,17 @@ export class UserService {
       email: Boolean(existEmail),
       mobileNumber: Boolean(existMobileNumber),
     };
+  }
+
+  // TODO: populate role
+  async findOneById<T>(_id: string): Promise<T> {
+    const user = this.userModel.findById(_id);
+    return user.lean();
+  }
+
+  async payloadSerialization(
+    data: IUserDocument,
+  ): Promise<UserPayloadSerialization> {
+    return plainToInstance(UserPayloadSerialization, data);
   }
 }

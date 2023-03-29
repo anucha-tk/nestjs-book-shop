@@ -9,6 +9,11 @@
     "Pipes",
     "lean",
     "lowercase",
-    "Exist"
+    "Exist",
+    "Expose",
+    "NOTE",
+    "serializations",
+    "remember",
+    "alphanum"
   ]
 }

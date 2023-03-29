@@ -24,10 +24,25 @@ import { HelperModule } from './helper/helper.module';
         DB_NAME: Joi.string().required(),
         DB_USER: Joi.string().required(),
         DB_USER_PWD: Joi.string().required(),
+        // JWT
+        AUTH_JWT_ACCESS_TOKEN_SECRET_KEY: Joi.string()
+          .alphanum()
+          .min(5)
+          .max(50)
+          .required(),
+        AUTH_JWT_ACCESS_TOKEN_EXPIRED: Joi.string().default('30m').required(),
+        AUTH_JWT_REFRESH_TOKEN_SECRET_KEY: Joi.string()
+          .alphanum()
+          .min(5)
+          .max(50)
+          .required(),
+        AUTH_JWT_REFRESH_TOKEN_EXPIRED: Joi.string().default('7d').required(),
+        AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED: Joi.string()
+          .default('30d')
+          .required(),
       }),
     }),
     MongooseModule.forRootAsync({
-      // connectionName: 'PrimaryConnectionDatabase',
       inject: [DatabaseOptionsService],
       imports: [DatabaseOptionsModule],
       useFactory: (databaseOptionsService: DatabaseOptionsService) =>
