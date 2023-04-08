@@ -4,7 +4,7 @@ services:
     build: .
     hostname: nestjs
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - ${HTTP_PORT}:${HTTP_PORT}
     networks:
       - nestjs-network
     volumes:
@@ -14,7 +14,7 @@ services:
     depends_on:
       - mongodb
   mongodb:
-    container_name: mongo
+    container_name: mongodb
     image: mongo:5.0
     hostname: mongo
     ports:
@@ -22,11 +22,11 @@ services:
     env_file:
       - .env
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=$DB_ADMIN
-      - MONGO_INITDB_ROOT_PASSWORD=$DB_ADMIN_PWD
-      - MONGO_INITDB_DATABASE=$DB_NAME
-      - MONGO_INITDB_USERNAME=$DB_USER
-      - MONGO_INITDB_PASSWORD=$DB_USER_PWD
+      - MONGO_INITDB_ROOT_USERNAME=$DATABASE_ADMIN
+      - MONGO_INITDB_ROOT_PASSWORD=$DATABASE_ADMIN_PWD
+      - MONGO_INITDB_DATABASE=$DATABASE_NAME
+      - MONGO_INITDB_USERNAME=$DATABASE_USER
+      - MONGO_INITDB_PASSWORD=$DATABASE_USER_PWD
     volumes:
       - ./addons/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
       - dbdata:/data/db

@@ -2,6 +2,7 @@
   "version": "0.2",
   "language": "ea",
   "words": [
+    "production",
     "nestjs",
     "Nest",
     "Inject",
@@ -14,6 +15,19 @@
     "NOTE",
     "serializations",
     "remember",
-    "alphanum"
+    "alphanum",
+    "Interceptor",
+    "reflector",
+    "plain",
+    "Interceptors",
+    "interceptors",
+    "jest",
+    "mock",
+    "Mocks",
+    "swagger",
+    "Bearer",
+    "staging",
+    "explorer",
+    "registered"
   ]
 }
