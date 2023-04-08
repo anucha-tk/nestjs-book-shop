@@ -2,6 +2,7 @@
   "version": "0.2",
   "language": "ea",
   "words": [
+    "NEUTRAL",
     "production",
     "nestjs",
     "Nest",
@@ -28,6 +29,7 @@
     "Bearer",
     "staging",
     "explorer",
-    "registered"
+    "registered",
+    "UnifiedTopology"
   ]
 }
