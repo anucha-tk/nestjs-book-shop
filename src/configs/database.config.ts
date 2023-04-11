@@ -6,7 +6,7 @@ export default registerAs(
     host: process.env?.DATABASE_HOST ?? 'mongodb://localhost:27017',
     name: process.env?.DATABASE_NAME,
     user: process.env?.DATABASE_USER,
-    password: process?.env.DATABASE_PASSWORD,
+    password: process?.env.DATABASE_USER_PWD,
     debug: process.env.DATABASE_DEBUG === 'true',
     options: process.env?.DATABASE_OPTIONS,
   }),

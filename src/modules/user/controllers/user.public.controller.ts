@@ -2,25 +2,33 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   InternalServerErrorException,
   Post,
 } from '@nestjs/common';
 import { AuthService } from 'src/common/auth/services/auth.service';
 import { ENUM_ERROR_STATUS_CODE_ERROR } from 'src/common/error/error.status-code.constant';
+import { Response } from 'src/common/response/decorators/response.decorator';
 import { ENUM_USER_STATUS_CODE_ERROR } from '../constants/user.status-code';
 import { UserSignupDto } from '../dto/user.sign-up.dto';
 import { UserPayloadSerialization } from '../serializations/user.payload.serialization';
 import { UserService } from '../services/user.service';
 import { IUserDocument } from '../user.interface';
 
-@Controller('user')
+@Controller({ version: '1', path: '/user' })
 export class UserPublicController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
   ) {}
 
-  //TODO: make @response
+  @Response('user.list')
+  @Get('/all')
+  async allUsers() {
+    return this.userService.findAll();
+  }
+
+  @Response('user.signUp')
   @Post('/sign-up')
   async signup(
     @Body()

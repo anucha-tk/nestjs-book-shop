@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { HelperDateService } from 'src/common/helper/services/helper.date.service';
 import { Response } from 'src/common/response/decorators/response.decorator';
 import { IResponse } from 'src/common/response/interfaces/response.interface';
+import { AppHelloSerialization } from './serializations/app.hello.serialization';
 
 @Controller({
   version: VERSION_NEUTRAL,
@@ -18,7 +19,7 @@ export class AppController {
     this.serviceName = this.configService.get<string>('app.name');
   }
 
-  @Response('app.hello')
+  @Response('app.hello', { serialization: AppHelloSerialization })
   @Get('/hello')
   async hello(): Promise<IResponse> {
     const newDate = this.helperDateService.create();

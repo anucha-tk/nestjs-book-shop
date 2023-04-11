@@ -10,7 +10,7 @@ export default registerAs(
     language: process.env.APP_LANGUAGE?.split(',') ?? [APP_LANGUAGE],
     repoVersion: version,
     versioning: {
-      enable: process.env.HTTP_VERSIONING_ENABLE === 'true' ?? 'false',
+      enable: process.env.HTTP_VERSIONING_ENABLE === 'true' ?? false,
       prefix: 'v',
       version: process.env.HTTP_VERSION ?? '1',
     },
