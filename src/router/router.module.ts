@@ -19,10 +19,6 @@ export class RouterModule {
         RoutesPublicModule,
         NestjsRouterModule.register([
           {
-            path: '/',
-            module: RoutesModule,
-          },
-          {
             path: '/public',
             module: RoutesPublicModule,
           },
