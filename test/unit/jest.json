@@ -5,7 +5,8 @@
   "testEnvironment": "node",
   "testMatch": [
     "<rootDir>/test/unit/config/*.spec.ts",
-    "<rootDir>/test/unit/database/*.spec.ts"
+    "<rootDir>/test/unit/database/*.spec.ts",
+    "<rootDir>/test/unit/user/*.spec.ts"
   ],
   "collectCoverage": true,
   "coverageDirectory": "coverage",

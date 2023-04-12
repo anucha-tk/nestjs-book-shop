@@ -6,11 +6,10 @@ import { RoutesPublicModule } from 'src/router/routes/routes.public.module';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
-import { UserService } from 'src/modules/user/services/user.service';
+import { E2E_USER } from './user.constant';
 
 describe('E2E User Public', () => {
   let app: INestApplication;
-  let userService: UserService;
   let userData: Record<string, any>;
 
   const password = '123456';
@@ -31,7 +30,6 @@ describe('E2E User Public', () => {
 
     app = modRef.createNestApplication();
     useContainer(app.select(CommonModule), { fallbackOnErrors: true });
-    userService = app.get(UserService);
 
     userData = {
       firstName: faker.name.firstName(),
@@ -52,22 +50,36 @@ describe('E2E User Public', () => {
     await app.close();
   });
 
-  it(`POST sign-up Error Request`, async () => {
-    const { body } = await request(app.getHttpServer())
-      .post('/public/user/sign-up')
-      .set('Content-Type', 'application/json')
-      .send({});
-    expect(body.message).toMatch(/request.validation/);
-  });
+  describe('POST Signup', () => {
+    it(`should error when empty`, async () => {
+      const { body } = await request(app.getHttpServer())
+        .post(E2E_USER.PUBLIC_SIGNUP)
+        .set('Content-Type', 'application/json')
+        .send({});
+      expect(body.message).toMatch(/request.validation/);
+    });
 
-  it(`POST sign-up Error passwordConfirm not match`, async () => {
-    const { body } = await request(app.getHttpServer())
-      .post('/public/user/sign-up')
-      .set('Content-Type', 'application/json')
-      .send({ ...userData, passwordConfirm: '999999' });
-    expect(body.message).toMatch(/request.validation/);
-    expect(body.errors[0].constraints.passwordConfirmMatch).toMatch(
-      /Passwords do not match/,
-    );
+    it(`should error when passwordConfirm not match`, async () => {
+      const { body } = await request(app.getHttpServer())
+        .post(E2E_USER.PUBLIC_SIGNUP)
+        .set('Content-Type', 'application/json')
+        .send({ ...userData, passwordConfirm: '999999' });
+      expect(body.message).toMatch(/request.validation/);
+      expect(body.errors[0].constraints.passwordConfirmMatch).toMatch(
+        /Passwords do not match/,
+      );
+    });
+
+    it('should return accessToken and refreshToken when successful', async () => {
+      const { body } = await request(app.getHttpServer())
+        .post(E2E_USER.PUBLIC_SIGNUP)
+        .set('Content-Type', 'application/json')
+        .send(userData);
+
+      expect(body.statusCode).toBe(201);
+      expect(body.message).toMatch(/sign up success/i);
+      expect(body.data.accessToken).toBeDefined();
+      expect(body.data.refreshToken).toBeDefined();
+    });
   });
 });
