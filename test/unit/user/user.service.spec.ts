@@ -1,72 +1,74 @@
-import { getModelToken } from '@nestjs/mongoose';
-import { Test } from '@nestjs/testing';
-import { Model } from 'mongoose';
-import { UserEntity } from 'src/modules/user/schemas/user.schema';
+import { faker } from '@faker-js/faker';
+import { Test, TestingModule } from '@nestjs/testing';
+import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
+import { UserCreateDto } from 'src/modules/user/dtos/user.create.dto';
+import { UserRepository } from 'src/modules/user/repository/repositories/user.repository';
 import { UserService } from 'src/modules/user/services/user.service';
 
 describe('User Module', () => {
   let userService: UserService;
-  let userModel: Model<UserEntity>;
+  let userRepository: UserRepository;
+
+  const userData: UserCreateDto = {
+    username: faker.name.middleName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    email: faker.internet.email(),
+    mobileNumber: faker.phone.number(),
+  };
+  const password: IAuthPassword = {
+    salt: faker.random.alphaNumeric(7),
+    passwordHash: faker.random.alphaNumeric(10),
+    passwordExpired: faker.date.future(),
+  };
 
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
         {
-          provide: getModelToken(UserEntity.name),
+          provide: UserRepository,
           useValue: {
-            new: jest.fn().mockResolvedValue({}),
-            constructor: jest.fn().mockResolvedValue({}),
-            find: jest.fn(),
-            findById: jest.fn(),
-            exists: jest.fn(),
-            lean: jest.fn(),
-            save: jest.fn(),
+            create: jest.fn(),
           },
         },
       ],
     }).compile();
 
-    userService = moduleRef.get<UserService>(UserService);
-    userModel = moduleRef.get<Model<UserEntity>>(
-      getModelToken(UserEntity.name),
-    );
+    userService = module.get<UserService>(UserService);
+    userRepository = module.get<UserRepository>(UserRepository);
   });
 
-  describe('checkExist', () => {
-    it('should check if the email and mobile number exist', async () => {
-      const email = 'test@example.com';
-      const mobileNumber = '1234567890';
-      const existEmail = true;
-      const existMobileNumber = false;
-      jest
-        .spyOn(userModel, 'exists')
-        .mockReturnValueOnce(Promise.resolve(existEmail) as never)
-        .mockReturnValueOnce(Promise.resolve(existMobileNumber) as never);
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-      const result = await userService.checkExist(email, mobileNumber);
+  describe('create', () => {
+    it('should create a new user', async () => {
+      const expectUser = {
+        ...userData,
+        _id: '1',
+        salt: password.salt,
+        password: password.passwordHash,
+        passwordExpired: password.passwordExpired,
+        isActive: true,
+        createdAt: faker.date.recent(),
+        updatedAt: faker.date.recent(),
+      };
+      const spyUserRepoCreate = jest
+        .spyOn(userRepository, 'create')
+        .mockResolvedValue(expectUser);
+      const result = await userService.create(userData, password);
 
-      expect(userModel.exists).toHaveBeenCalledTimes(2);
-      expect(result).toEqual({
-        email: existEmail,
-        mobileNumber: existMobileNumber,
+      expect(spyUserRepoCreate).toHaveBeenCalledTimes(1);
+      expect(userRepository.create).toHaveBeenCalledWith({
+        ...userData,
+        salt: password.salt,
+        password: password.passwordHash,
+        passwordExpired: password.passwordExpired,
+        isActive: true,
       });
-    });
-  });
-
-  describe('findAll', () => {
-    it('should find all users', async () => {
-      const users = [
-        { _id: '123', name: 'Test User', email: 'test@example.com' },
-      ];
-      jest.spyOn(userModel, 'find').mockReturnValueOnce({
-        lean: jest.fn().mockResolvedValue(users),
-      } as any);
-
-      const result = await userService.findAll();
-
-      expect(userModel.find).toHaveBeenCalled();
-      expect(result).toEqual(users);
+      expect(result).toEqual(expectUser);
     });
   });
 });

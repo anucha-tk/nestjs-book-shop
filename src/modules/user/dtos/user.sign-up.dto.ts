@@ -8,7 +8,24 @@ import {
 } from 'class-validator';
 import { PasswordConfirmMatch } from '../validators/password-confirm.validator';
 
+/**
+ * Data transfer object for user sign-up information.
+ * @property {string} username
+ * @property email User's email address. Example: user@example.com
+ * @property firstName User's first name. Example: John
+ * @property lastName User's last name. Example: Doe
+ * @property mobileNumber User's mobile number. Example: 555-555-5555
+ * @property password User's password. Example: 12345678
+ * @property passwordConfirm User's confirmed password. Example: 12345678
+ */
 export class UserSignupDto {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(30)
+  @Type(() => String)
+  username: string;
+
   @IsNotEmpty()
   @MaxLength(100)
   @IsEmail()

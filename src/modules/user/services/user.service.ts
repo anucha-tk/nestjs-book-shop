@@ -1,47 +1,63 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
-import { Model } from 'mongoose';
-import { UserDocument, UserEntity } from '../schemas/user.schema';
-import { UserPayloadSerialization } from '../serializations/user.payload.serialization';
-import { IUserCheckExist, IUserCreate, IUserDocument } from '../user.interface';
+import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
+import { UserCreateDto } from '../dtos/user.create.dto';
+import { UserEntity } from '../repository/entities/user.entity';
+import { UserRepository } from '../repository/repositories/user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(UserEntity.name) private userModel: Model<UserDocument>,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
-  async create(userCreateDto: IUserCreate): Promise<UserDocument> {
-    return new this.userModel(userCreateDto).save();
+  async create(
+    { username, firstName, lastName, email, mobileNumber }: UserCreateDto,
+    { salt, passwordHash, passwordExpired }: IAuthPassword,
+  ): Promise<UserEntity> {
+    const create: UserEntity = new UserEntity();
+    create.username = username;
+    create.firstName = firstName;
+    create.lastName = lastName;
+    create.email = email;
+    create.salt = salt;
+    create.isActive = true;
+    create.password = passwordHash;
+    create.passwordExpired = passwordExpired;
+    create.mobileNumber = mobileNumber;
+    return this.userRepository.create(create);
   }
 
-  async checkExist(
-    email: string,
-    mobileNumber: string,
-  ): Promise<IUserCheckExist> {
-    const [existEmail, existMobileNumber] = await Promise.all([
-      this.userModel.exists({
-        email: { $regex: new RegExp(email), $options: 'i' },
-      }),
-      this.userModel.exists({ mobileNumber }),
-    ]);
+  // async checkExist(
+  //   email: string,
+  //   mobileNumber: string,
+  // ): Promise<IUserCheckExist> {
+  //   const [existEmail, existMobileNumber] = await Promise.all([
+  //     this.userRepository.exists({
+  //       email: { $regex: new RegExp(email), $options: 'i' },
+  //     }),
+  //     this.userRepository.exists({ mobileNumber }),
+  //   ]);
 
-    return {
-      email: Boolean(existEmail),
-      mobileNumber: Boolean(existMobileNumber),
-    };
-  }
+  //   return {
+  //     email: Boolean(existEmail),
+  //     mobileNumber: Boolean(existMobileNumber),
+  //   };
+  // }
 
-  // TODO: populate role
-  async findOneById<T>(_id: string): Promise<T> {
-    const user = this.userModel.findById(_id);
-    return user.lean();
-  }
+  // // TODO: populate role
+  // async findOneById<T>(_id: string): Promise<T> {
+  //   const user = this.userRepository.findById(_id);
+  //   return user.lean();
+  // }
 
-  async payloadSerialization(
-    data: IUserDocument,
-  ): Promise<UserPayloadSerialization> {
-    return plainToInstance(UserPayloadSerialization, data);
-  }
+  // async payloadSerialization(
+  //   data: IUserDocument,
+  // ): Promise<UserPayloadSerialization> {
+  //   return plainToInstance(UserPayloadSerialization, data);
+  // }
+
+  // async deleteMany(
+  //     find: Record<string, any>,
+  //     options?: IDatabaseManyOptions
+  // ): Promise<boolean> {
+  //     return this.userModel.deleteMany(find, options);
+  // }
 }

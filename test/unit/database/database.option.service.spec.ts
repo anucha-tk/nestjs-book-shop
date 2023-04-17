@@ -2,8 +2,8 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseOptionsService } from 'src/common/database/services/database.options.services';
 import { Test } from '@nestjs/testing';
 import configs from 'src/configs';
-import { DatabaseOptionsModule } from 'src/common/database/database.module';
 import { MongooseModuleOptions } from '@nestjs/mongoose';
+import { DatabaseOptionsModule } from 'src/common/database/database.options.module';
 
 describe('DatabaseOptionsService', () => {
   let databaseOptionsService: DatabaseOptionsService;
