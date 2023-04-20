@@ -30,6 +30,7 @@ describe('User Module', () => {
           provide: UserRepository,
           useValue: {
             create: jest.fn(),
+            exists: jest.fn(),
           },
         },
       ],
@@ -69,6 +70,108 @@ describe('User Module', () => {
         isActive: true,
       });
       expect(result).toEqual(expectUser);
+    });
+  });
+
+  describe('exists by', () => {
+    describe('username', () => {
+      it('should return true when username exist', async () => {
+        const spyUserRepoExists = jest
+          .spyOn(userRepository, 'exists')
+          .mockResolvedValue(true);
+        const result = await userService.existByUsername('example');
+
+        expect(result).toBeTruthy();
+        expect(spyUserRepoExists).toHaveBeenCalledTimes(1);
+        expect(spyUserRepoExists).toBeCalledWith({ username: 'example' });
+      });
+
+      it('should return false when username not exist', async () => {
+        const spyUserRepoExists = jest
+          .spyOn(userRepository, 'exists')
+          .mockResolvedValue(false);
+        const result = await userService.existByUsername('abc');
+
+        expect(result).toBeFalsy();
+        expect(spyUserRepoExists).toHaveBeenCalledTimes(1);
+        expect(spyUserRepoExists).toBeCalledWith({ username: 'abc' });
+      });
+    });
+
+    describe('email', () => {
+      it('should return false when email not exist', async () => {
+        const spyUserRepoExists = jest
+          .spyOn(userRepository, 'exists')
+          .mockResolvedValue(false);
+        const result = await userService.existByEmail('abc@gmail.com');
+
+        expect(result).toBeFalsy();
+        expect(spyUserRepoExists).toHaveBeenCalledTimes(1);
+        expect(spyUserRepoExists).toBeCalledWith({
+          email: { $options: 'i', $regex: /abc@gmail.com/ },
+        });
+      });
+
+      it('should return true when email not exist', async () => {
+        const spyUserRepoExists = jest
+          .spyOn(userRepository, 'exists')
+          .mockResolvedValue(true);
+        const result = await userService.existByEmail('x@gmail.com');
+
+        expect(result).toBeTruthy();
+        expect(spyUserRepoExists).toHaveBeenCalledTimes(1);
+        expect(spyUserRepoExists).toBeCalledWith({
+          email: { $options: 'i', $regex: /x@gmail.com/ },
+        });
+      });
+    });
+
+    describe('mobileNumber', () => {
+      it('should return false when mobileNumber not exist', async () => {
+        const spyUserRepoExists = jest
+          .spyOn(userRepository, 'exists')
+          .mockResolvedValue(false);
+        const result = await userService.existByMobileNumber('123456789');
+
+        expect(result).toBeFalsy();
+        expect(spyUserRepoExists).toHaveBeenCalledTimes(1);
+        expect(spyUserRepoExists).toBeCalledWith({ mobileNumber: '123456789' });
+      });
+
+      it('should return true when mobileNumber not exist', async () => {
+        const spyUserRepoExists = jest
+          .spyOn(userRepository, 'exists')
+          .mockResolvedValue(true);
+        const result = await userService.existByMobileNumber('123456789');
+
+        expect(result).toBeTruthy();
+        expect(spyUserRepoExists).toHaveBeenCalledTimes(1);
+        expect(spyUserRepoExists).toBeCalledWith({ mobileNumber: '123456789' });
+      });
+    });
+  });
+
+  describe('deleteMany', () => {
+    it('should return true when deleteMany', async () => {
+      const find = { username: 'abc' };
+      const spyUserRepoDeleteMany = jest
+        .spyOn(userService, 'deleteMany')
+        .mockResolvedValue(true);
+      const result = await userService.deleteMany(find);
+      expect(spyUserRepoDeleteMany).toHaveBeenCalledTimes(1);
+      expect(spyUserRepoDeleteMany).toBeCalledWith(find);
+      expect(result).toBeTruthy();
+    });
+
+    it('should return false when deleteMany', async () => {
+      const find = { username: 'abc' };
+      const spyUserRepoDeleteMany = jest
+        .spyOn(userService, 'deleteMany')
+        .mockResolvedValue(false);
+      const result = await userService.deleteMany(find);
+      expect(spyUserRepoDeleteMany).toHaveBeenCalledTimes(1);
+      expect(spyUserRepoDeleteMany).toBeCalledWith(find);
+      expect(result).toBeFalsy();
     });
   });
 });

@@ -62,6 +62,7 @@ describe('DatabaseOptionsService', () => {
       expect(result).toBeDefined();
       expect(result).toBeTruthy();
       expect(result.uri).toMatch('mongodb://localhost:27017/nestjs-book-shop');
+      // cspell:ignore nestjsbookshop
       expect(result.auth.username).toMatch('nestjsbookshop-db-user');
       expect(result.auth.username).toMatch('nestjsbookshop');
     });

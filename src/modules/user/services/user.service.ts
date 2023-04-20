@@ -25,6 +25,28 @@ export class UserService {
     return this.userRepository.create(create);
   }
 
+  async existByEmail(email: string): Promise<boolean> {
+    return this.userRepository.exists({
+      email: {
+        $regex: new RegExp(email),
+        $options: 'i',
+      },
+    });
+  }
+
+  async existByMobileNumber(mobileNumber: string): Promise<boolean> {
+    return this.userRepository.exists({
+      mobileNumber,
+    });
+  }
+
+  async existByUsername(username: string): Promise<boolean> {
+    return this.userRepository.exists({ username });
+  }
+
+  async deleteMany(find: Record<string, any>): Promise<boolean> {
+    return this.userRepository.deleteMany(find);
+  }
   // async checkExist(
   //   email: string,
   //   mobileNumber: string,
