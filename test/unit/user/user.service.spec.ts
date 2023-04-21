@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
 import { UserCreateDto } from 'src/modules/user/dtos/user.create.dto';
+import { UserEntity } from 'src/modules/user/repository/entities/user.entity';
 import { UserRepository } from 'src/modules/user/repository/repositories/user.repository';
 import { UserService } from 'src/modules/user/services/user.service';
 
@@ -172,6 +173,20 @@ describe('User Module', () => {
       expect(spyUserRepoDeleteMany).toHaveBeenCalledTimes(1);
       expect(spyUserRepoDeleteMany).toBeCalledWith(find);
       expect(result).toBeFalsy();
+    });
+  });
+
+  describe('find', () => {
+    it('findOneById', async () => {
+      const _id = faker.database.mongodbObjectId();
+      const spyUserRepoFindOneById = jest
+        .spyOn(userService, 'findOneById')
+        .mockResolvedValue({ _id: 1 });
+
+      const find = await userService.findOneById<UserEntity>(_id);
+      expect(spyUserRepoFindOneById).toBeCalledWith(_id);
+      expect(spyUserRepoFindOneById).toBeCalledTimes(1);
+      expect(find).toEqual({ _id: 1 });
     });
   });
 });

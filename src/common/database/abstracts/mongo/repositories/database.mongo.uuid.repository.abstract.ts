@@ -51,4 +51,10 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<T>
       throw err;
     }
   }
+
+  async findOneById<Y = T>(_id: string): Promise<Y> {
+    const findOne = this._repository.findById(_id);
+
+    return findOne.lean();
+  }
 }

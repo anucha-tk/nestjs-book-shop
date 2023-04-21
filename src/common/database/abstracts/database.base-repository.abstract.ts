@@ -32,4 +32,13 @@ export abstract class DatabaseBaseRepositoryAbstract<T> {
   abstract deleteMany(
     find: Record<string, any> | Record<string, any>[],
   ): Promise<boolean>;
+
+  /**
+   * Retrieves a single entity from the database by its unique identifier.
+   *
+   * @param _id The unique identifier of the entity to retrieve.
+   * @returns A promise that resolves to an entity of type Y if found, otherwise undefined.
+   * @template Y The type of the entity to retrieve. Defaults to the same type as T.
+   */
+  abstract findOneById<Y = T>(_id: string): Promise<Y>;
 }

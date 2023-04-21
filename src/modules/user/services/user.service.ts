@@ -47,6 +47,10 @@ export class UserService {
   async deleteMany(find: Record<string, any>): Promise<boolean> {
     return this.userRepository.deleteMany(find);
   }
+
+  async findOneById<T>(_id: string): Promise<T> {
+    return this.userRepository.findOneById<T>(_id);
+  }
   // async checkExist(
   //   email: string,
   //   mobileNumber: string,
