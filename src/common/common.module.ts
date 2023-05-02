@@ -13,6 +13,8 @@ import { ResponseModule } from './response/response.module';
 import { ENUM_APP_ENVIRONMENT } from 'src/app/constants/app.enum.constant';
 import { RequestModule } from './request/request.module';
 import { DatabaseOptionsModule } from './database/database.options.module';
+import { DATABASE_CONNECTION_NAME } from './database/constants/database.constant';
+import { ErrorModule } from './error/error.module';
 
 @Module({
   imports: [
@@ -70,11 +72,13 @@ import { DatabaseOptionsModule } from './database/database.options.module';
       }),
     }),
     MongooseModule.forRootAsync({
+      connectionName: DATABASE_CONNECTION_NAME,
       inject: [DatabaseOptionsService],
       imports: [DatabaseOptionsModule],
       useFactory: (databaseOptionsService: DatabaseOptionsService) =>
         databaseOptionsService.createOptions(),
     }),
+    ErrorModule,
     RequestModule,
     MessageModule,
     ResponseModule,
