@@ -142,6 +142,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
       resMetadata,
     });
 
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     responseExpress = this.getResponseExpress({
       responseExpress: responseExpress,
       customLang,
