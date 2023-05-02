@@ -105,9 +105,9 @@ export class MessageService implements IMessageService {
   }
 
   async get<T = string>(key: string, options?: IMessageOptions): Promise<T> {
-    const properties = options.properties;
+    const properties = options?.properties;
     const customLanguages =
-      options.customLanguages?.length > 0
+      options?.customLanguages?.length > 0
         ? options.customLanguages
         : this.appDefaultLanguage;
 

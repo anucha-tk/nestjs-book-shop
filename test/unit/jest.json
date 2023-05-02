@@ -7,7 +7,8 @@
     "<rootDir>/test/unit/config/*.spec.ts",
     "<rootDir>/test/unit/database/*.spec.ts",
     "<rootDir>/test/unit/user/*.spec.ts",
-    "<rootDir>/test/unit/auth/*.spec.ts"
+    "<rootDir>/test/unit/auth/*.spec.ts",
+    "<rootDir>/test/unit/message/*.spec.ts"
   ],
   "collectCoverage": true,
   "coverageDirectory": "coverage",
