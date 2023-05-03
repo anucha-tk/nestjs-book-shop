@@ -10,6 +10,7 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ENUM_REQUEST_STATUS_CODE_ERROR } from './constants/request.status-code.constant';
 import { RequestTimeoutInterceptor } from './interceptors/request.timeout.interceptor';
+import { RequestMiddlewareModule } from './middleware/request.middleware.module';
 
 @Module({
   controllers: [],
@@ -43,6 +44,7 @@ import { RequestTimeoutInterceptor } from './interceptors/request.timeout.interc
     },
   ],
   imports: [
+    RequestMiddlewareModule,
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
