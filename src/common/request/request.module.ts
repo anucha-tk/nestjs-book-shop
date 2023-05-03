@@ -5,7 +5,9 @@ import {
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ENUM_REQUEST_STATUS_CODE_ERROR } from './constants/request.constant';
 
 @Module({
@@ -30,6 +32,20 @@ import { ENUM_REQUEST_STATUS_CODE_ERROR } from './constants/request.constant';
             }),
         }),
     },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
+  imports: [
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        ttl: config.get('request.throttle.ttl'),
+        limit: config.get('request.throttle.limit'),
+      }),
+    }),
   ],
 })
 export class RequestModule {}
