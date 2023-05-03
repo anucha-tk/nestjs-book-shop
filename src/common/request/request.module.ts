@@ -6,13 +6,18 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { ENUM_REQUEST_STATUS_CODE_ERROR } from './constants/request.constant';
+import { ENUM_REQUEST_STATUS_CODE_ERROR } from './constants/request.status-code.constant';
+import { RequestTimeoutInterceptor } from './interceptors/request.timeout.interceptor';
 
 @Module({
   controllers: [],
   providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RequestTimeoutInterceptor,
+    },
     {
       provide: APP_PIPE,
       useFactory: () =>
