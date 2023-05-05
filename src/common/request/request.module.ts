@@ -11,6 +11,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ENUM_REQUEST_STATUS_CODE_ERROR } from './constants/request.status-code.constant';
 import { RequestTimeoutInterceptor } from './interceptors/request.timeout.interceptor';
 import { RequestMiddlewareModule } from './middleware/request.middleware.module';
+import { IsPasswordStrongConstraint } from './validations/request.is-password-strong.validation';
 
 @Module({
   controllers: [],
@@ -42,6 +43,7 @@ import { RequestMiddlewareModule } from './middleware/request.middleware.module'
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    IsPasswordStrongConstraint,
   ],
   imports: [
     RequestMiddlewareModule,

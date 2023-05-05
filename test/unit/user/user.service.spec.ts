@@ -11,8 +11,7 @@ describe('User Module', () => {
   let userRepository: UserRepository;
 
   const userData: UserCreateDto = {
-    username: faker.name.middleName(),
-    firstName: faker.name.firstName(),
+    firstName: 'jonh',
     lastName: faker.name.lastName(),
     email: faker.internet.email(),
     mobileNumber: faker.phone.number(),
@@ -75,30 +74,6 @@ describe('User Module', () => {
   });
 
   describe('exists by', () => {
-    describe('username', () => {
-      it('should return true when username exist', async () => {
-        const spyUserRepoExists = jest
-          .spyOn(userRepository, 'exists')
-          .mockResolvedValue(true);
-        const result = await userService.existByUsername('example');
-
-        expect(result).toBeTruthy();
-        expect(spyUserRepoExists).toHaveBeenCalledTimes(1);
-        expect(spyUserRepoExists).toBeCalledWith({ username: 'example' });
-      });
-
-      it('should return false when username not exist', async () => {
-        const spyUserRepoExists = jest
-          .spyOn(userRepository, 'exists')
-          .mockResolvedValue(false);
-        const result = await userService.existByUsername('abc');
-
-        expect(result).toBeFalsy();
-        expect(spyUserRepoExists).toHaveBeenCalledTimes(1);
-        expect(spyUserRepoExists).toBeCalledWith({ username: 'abc' });
-      });
-    });
-
     describe('email', () => {
       it('should return false when email not exist', async () => {
         const spyUserRepoExists = jest
@@ -154,7 +129,7 @@ describe('User Module', () => {
 
   describe('deleteMany', () => {
     it('should return true when deleteMany', async () => {
-      const find = { username: 'abc' };
+      const find = { username: 'Jonh' };
       const spyUserRepoDeleteMany = jest
         .spyOn(userService, 'deleteMany')
         .mockResolvedValue(true);
@@ -165,7 +140,7 @@ describe('User Module', () => {
     });
 
     it('should return false when deleteMany', async () => {
-      const find = { username: 'abc' };
+      const find = { username: 'Jonh' };
       const spyUserRepoDeleteMany = jest
         .spyOn(userService, 'deleteMany')
         .mockResolvedValue(false);

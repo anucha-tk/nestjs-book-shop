@@ -4,11 +4,22 @@ import { JwtModule } from '@nestjs/jwt';
 import { HelperDateService } from './services/helper.date.service';
 import { HelperEncryptionService } from './services/helper.encryption.service';
 import { HelperHashService } from './services/helper.hash.service';
+import { HelperStringService } from './services/helper.string.service';
 
 @Global()
 @Module({
-  providers: [HelperHashService, HelperDateService, HelperEncryptionService],
-  exports: [HelperHashService, HelperDateService, HelperEncryptionService],
+  providers: [
+    HelperHashService,
+    HelperDateService,
+    HelperEncryptionService,
+    HelperStringService,
+  ],
+  exports: [
+    HelperHashService,
+    HelperDateService,
+    HelperEncryptionService,
+    HelperStringService,
+  ],
   imports: [
     JwtModule.registerAsync({
       inject: [ConfigService],

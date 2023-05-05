@@ -9,11 +9,10 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async create(
-    { username, firstName, lastName, email, mobileNumber }: UserCreateDto,
+    { firstName, lastName, email, mobileNumber }: UserCreateDto,
     { salt, passwordHash, passwordExpired }: IAuthPassword,
   ): Promise<UserEntity> {
     const create: UserEntity = new UserEntity();
-    create.username = username;
     create.firstName = firstName;
     create.lastName = lastName;
     create.email = email;
@@ -38,10 +37,6 @@ export class UserService {
     return this.userRepository.exists({
       mobileNumber,
     });
-  }
-
-  async existByUsername(username: string): Promise<boolean> {
-    return this.userRepository.exists({ username });
   }
 
   async deleteMany(find: Record<string, any>): Promise<boolean> {

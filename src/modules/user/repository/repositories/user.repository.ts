@@ -5,7 +5,6 @@ import { DatabaseModel } from 'src/common/database/decorators/database.decorator
 import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
-// TODO: extend Database
 export class UserRepository extends DatabaseMongoUUIDRepositoryAbstract<UserEntity> {
   constructor(
     @DatabaseModel(UserEntity.name)

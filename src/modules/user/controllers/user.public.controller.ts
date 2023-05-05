@@ -5,13 +5,16 @@ import {
   InternalServerErrorException,
   Post,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/common/auth/services/auth.service';
-import { ENUM_ERROR_STATUS_CODE_ERROR } from 'src/common/error/error.status-code.constant';
+import { ENUM_ERROR_STATUS_CODE_ERROR } from 'src/common/error/constants/error.status-code.constant';
 import { Response } from 'src/common/response/decorators/response.decorator';
 import { ENUM_USER_STATUS_CODE_ERROR } from '../constants/user.status-code';
+import { UserSignUpDoc } from '../docs/user.public.doc';
 import { UserSignupDto } from '../dtos/user.sign-up.dto';
 import { UserService } from '../services/user.service';
 
+@ApiTags('modules.public.user')
 @Controller({ version: '1', path: '/user' })
 export class UserPublicController {
   constructor(
@@ -19,27 +22,21 @@ export class UserPublicController {
     private authService: AuthService,
   ) {}
 
+  @UserSignUpDoc()
   @Response('user.signUp')
   @Post('/sign-up')
   async signup(
     @Body()
-    { username, email, mobileNumber, ...body }: UserSignupDto,
-  ) {
-    //TODO: return type IResponse
-    // TODO: check role = user
+    { email, mobileNumber, ...body }: UserSignupDto,
+  ): Promise<void> {
+    // TODO: add role
 
-    const [usernameExist, emailExist, mobileNumberExist] = await Promise.all([
-      this.userService.existByUsername(username),
+    const [emailExist, mobileNumberExist] = await Promise.all([
       this.userService.existByEmail(email),
       this.userService.existByMobileNumber(mobileNumber),
     ]);
 
     switch (true) {
-      case usernameExist:
-        throw new ConflictException({
-          statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_USERNAME_EXISTS_ERROR,
-          message: 'user.error.usernameExist',
-        });
       case emailExist:
         throw new ConflictException({
           statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
@@ -60,7 +57,6 @@ export class UserPublicController {
 
       await this.userService.create(
         {
-          username,
           email,
           mobileNumber,
           ...body,

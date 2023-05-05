@@ -16,7 +16,7 @@ describe('E2E User Public', () => {
   let userService: UserService;
   const email: string = faker.internet.email();
   const mobileNumber: string = faker.phone.number('62812#########');
-  const password = '123456';
+  const password = 'y556a0ASB2@@!123';
 
   beforeAll(async () => {
     const modRef = await Test.createTestingModule({
@@ -43,7 +43,6 @@ describe('E2E User Public', () => {
       passwordConfirm: password,
       email,
       mobileNumber,
-      username: faker.internet.userName(),
     };
 
     await app.init();
@@ -93,7 +92,26 @@ describe('E2E User Public', () => {
           .send({});
 
         expect(status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
-        expect(body.message).toMatch(/request.validation/);
+        expect(body.message).toBe('Validation errors');
+        expect(body._error).toMatch(/request.validation/);
+      });
+
+      it(`should error when password not strong`, async () => {
+        const { body, status } = await request(app.getHttpServer())
+          .post(E2E_USER.PUBLIC_SIGNUP)
+          .set('Content-Type', 'application/json')
+          .send({
+            ...userData,
+            password: '123456789',
+            passwordConfirm: '123456789',
+          });
+
+        expect(status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
+        expect(body.message).toBe('Validation errors');
+        expect(body._error).toMatch(/request.validation/);
+        expect(body.errors[0].message).toMatch(
+          /request.IsPasswordStrongConstraint/i,
+        );
       });
 
       it(`should error when passwordConfirm not match`, async () => {
@@ -103,27 +121,9 @@ describe('E2E User Public', () => {
           .send({ ...userData, passwordConfirm: '999999' });
 
         expect(status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
-        expect(body.message).toMatch(/request.validation/);
-        expect(body.errors[0].constraints.passwordConfirmMatch).toMatch(
-          /Passwords do not match/,
-        );
-      });
-
-      it('should error when username exist', async () => {
-        const { body, status } = await request(app.getHttpServer())
-          .post(E2E_USER.PUBLIC_SIGNUP)
-          .set('Content-Type', 'application/json')
-          .send({
-            ...userData,
-            email: faker.internet.email(),
-            mobileNumber: faker.phone.number('082#######'),
-          });
-
-        expect(status).toBe(HttpStatus.CONFLICT);
-        expect(body.statusCode).toBe(
-          ENUM_USER_STATUS_CODE_ERROR.USER_USERNAME_EXISTS_ERROR,
-        );
-        expect(body.message).toMatch('user.error.usernameExist');
+        expect(body.message).toBe('Validation errors');
+        expect(body._error).toMatch(/request.validation/);
+        expect(body.errors[0].property).toMatch('passwordConfirm');
       });
 
       it('should error when email exist', async () => {
@@ -132,7 +132,6 @@ describe('E2E User Public', () => {
           .set('Content-Type', 'application/json')
           .send({
             ...userData,
-            username: faker.name.middleName(),
             mobileNumber: faker.phone.number('082#######'),
           });
 
@@ -140,7 +139,7 @@ describe('E2E User Public', () => {
         expect(body.statusCode).toBe(
           ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
         );
-        expect(body.message).toMatch('user.error.emailExist');
+        expect(body.message).toMatch('Email user used');
       });
 
       it('should error when mobileNumber exist', async () => {
@@ -149,14 +148,13 @@ describe('E2E User Public', () => {
           .set('Content-Type', 'application/json')
           .send({
             ...userData,
-            username: faker.name.middleName(),
             email: faker.internet.email(),
           });
         expect(status).toBe(HttpStatus.CONFLICT);
         expect(body.statusCode).toBe(
           ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
         );
-        expect(body.message).toMatch('user.error.mobileNumberExist');
+        expect(body.message).toMatch('Mobile Number user used');
       });
     });
   });
