@@ -5,6 +5,7 @@ import {
   RequestTextBodyParserMiddleware,
   RequestUrlencodedBodyParserMiddleware,
 } from './body-parser/request.body-parser.middleware';
+import { RequestCorsMiddleware } from './cors/request.cors.middleware';
 import { RequestHelmetMiddleware } from './helmet/request.helmet.middleware';
 import { RequestIdMiddleware } from './id/request.id.middleware';
 
@@ -19,6 +20,7 @@ export class RequestMiddlewareModule implements NestModule {
         RequestRawBodyParserMiddleware,
         RequestTextBodyParserMiddleware,
         RequestUrlencodedBodyParserMiddleware,
+        RequestCorsMiddleware,
       )
       .forRoutes('*');
   }
