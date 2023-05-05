@@ -6,7 +6,9 @@ import { AppModule } from './app/app.module';
 import swaggerInit from './swagger';
 
 async function bootstrap() {
-  const app: INestApplication = await NestFactory.create(AppModule);
+  const app: INestApplication = await NestFactory.create(AppModule, {
+    bodyParser: false,
+  });
   const configService = app.get(ConfigService);
   const env: string = configService.get<string>('app.env');
   const port: number = configService.get<number>('app.http.port');
