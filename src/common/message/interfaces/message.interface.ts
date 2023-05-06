@@ -4,4 +4,7 @@ export interface IMessageOptions {
   readonly customLanguages?: string[];
   readonly properties?: IMessageOptionsProperties;
 }
+export interface IMessageErrorOptions {
+  readonly customLanguages?: string[];
+}
 export type IMessageSetOptions = Omit<IMessageOptions, 'customLanguages'>;

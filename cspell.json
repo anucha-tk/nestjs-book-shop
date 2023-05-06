@@ -2,6 +2,9 @@
   "version": "0.2",
   "language": "ea",
   "words": [
+    "timezone",
+    "date",
+    "string",
     "validations",
     "body",
     "helmet",

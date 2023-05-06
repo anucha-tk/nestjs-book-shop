@@ -1,14 +1,11 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Response, NextFunction } from 'express';
-import { DatabaseDefaultUUID } from 'src/common/database/constants/database.function.constant';
 import { IRequestApp } from 'src/common/request/interfaces/request.interface';
 
 @Injectable()
-export class RequestIdMiddleware implements NestMiddleware {
+export class RequestTimezoneMiddleware implements NestMiddleware {
   async use(req: IRequestApp, _: Response, next: NextFunction): Promise<void> {
-    const uuid: string = DatabaseDefaultUUID();
-    req.headers['x-request-id'] = uuid;
-    req.__id = uuid;
+    req.__timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     next();
   }
 }

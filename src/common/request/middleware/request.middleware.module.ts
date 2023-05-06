@@ -8,6 +8,9 @@ import {
 import { RequestCorsMiddleware } from './cors/request.cors.middleware';
 import { RequestHelmetMiddleware } from './helmet/request.helmet.middleware';
 import { RequestIdMiddleware } from './id/request.id.middleware';
+import { RequestTimestampMiddleware } from './timestamp/request.timestamp.middleware';
+import { RequestTimezoneMiddleware } from './timezone/request.timezone.middleware';
+import { RequestVersionMiddleware } from './version/request.middleware.version';
 
 @Module({})
 export class RequestMiddlewareModule implements NestModule {
@@ -21,6 +24,9 @@ export class RequestMiddlewareModule implements NestModule {
         RequestTextBodyParserMiddleware,
         RequestUrlencodedBodyParserMiddleware,
         RequestCorsMiddleware,
+        RequestTimestampMiddleware,
+        RequestTimezoneMiddleware,
+        RequestVersionMiddleware,
       )
       .forRoutes('*');
   }

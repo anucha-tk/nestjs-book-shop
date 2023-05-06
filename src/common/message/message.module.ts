@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { HeaderResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n';
 import { ENUM_MESSAGE_LANGUAGE } from './constants/message.enum.constants';
 import { MessageService } from './services/message.service';
+import { MessageMiddlewareModule } from './middleware/message.middleware.module';
 
 @Global()
 @Module({
@@ -26,6 +27,7 @@ import { MessageService } from './services/message.service';
       inject: [ConfigService],
       resolvers: [new HeaderResolver(['x-custom-lang'])],
     }),
+    MessageMiddlewareModule,
   ],
   controllers: [],
 })

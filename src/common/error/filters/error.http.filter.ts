@@ -43,16 +43,17 @@ export class ErrorHttpFilter implements ExceptionFilter {
     const request = ctx.getRequest<IRequestApp>();
 
     // get request headers
-    const customLang: string[] =
-      ctx.getRequest<IRequestApp>().customLang ?? this.appDefaultLanguage;
+    const __customLang: string[] =
+      ctx.getRequest<IRequestApp>().__customLang ?? this.appDefaultLanguage;
 
     // get _metadata
-    const __requestId = request.id ?? DatabaseDefaultUUID();
+    const __requestId = request.__id ?? DatabaseDefaultUUID();
     const __path = request.path;
-    const __timestamp = request.timestamp ?? this.helperDateService.timestamp();
+    const __timestamp =
+      request.__timestamp ?? this.helperDateService.timestamp();
     const __timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const __version = request.version ?? this.version;
-    const __repoVersion = request.repoVersion ?? this.repoVersion;
+    const __version = request.__version ?? this.version;
+    const __repoVersion = request.__repoVersion ?? this.repoVersion;
 
     // TODO: try Debugger
 
@@ -69,7 +70,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
           responseException;
 
         let { errors, _error } = responseException;
-        errors = await this.checkErrorType(errors, _errorType, customLang);
+        errors = await this.checkErrorType(errors, _errorType, __customLang);
 
         if (!_error) {
           _error = 'message' in exception ? exception.message : undefined;
@@ -80,13 +81,13 @@ export class ErrorHttpFilter implements ExceptionFilter {
         const mapMessage: string | IMessage = await this.messageService.get(
           message,
           {
-            customLanguages: customLang,
+            customLanguages: __customLang,
             properties,
           },
         );
 
         const resMetadata = this.getResMetadata({
-          customLang,
+          __customLang,
           __timestamp,
           __timezone,
           __requestId,
@@ -108,7 +109,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
 
         responseExpress = this.getResponseExpress({
           responseExpress: responseExpress,
-          customLang,
+          __customLang,
           __timestamp,
           __timezone,
           __requestId,
@@ -124,7 +125,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
 
     const message: string = await this.messageService.get(`http.${statusHttp}`);
     const resMetadata = this.getResMetadata({
-      customLang,
+      __customLang,
       __timestamp,
       __timezone,
       __requestId,
@@ -145,7 +146,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     responseExpress = this.getResponseExpress({
       responseExpress: responseExpress,
-      customLang,
+      __customLang,
       __timestamp,
       __timezone,
       __requestId,
@@ -159,7 +160,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
   }
 
   getResMetadata({
-    customLang,
+    __customLang,
     __timestamp,
     __timezone,
     __requestId,
@@ -168,7 +169,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     __repoVersion,
     _metadata,
   }: {
-    customLang: string[];
+    __customLang: string[];
     __timestamp: number;
     __timezone: string;
     __requestId: string;
@@ -178,7 +179,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     _metadata?: Record<string, any>;
   }): IErrorHttpFilterMetadata {
     return {
-      languages: customLang,
+      languages: __customLang,
       timestamp: __timestamp,
       timezone: __timezone,
       requestId: __requestId,
@@ -224,13 +225,13 @@ export class ErrorHttpFilter implements ExceptionFilter {
     if (errors?.length > 0) {
       errors =
         _errorType === ERROR_TYPE.IMPORT
-          ? await this.messageService.getImportErrorsMessage(
+          ? this.messageService.getImportErrorsMessage(
               errors as IValidationErrorImport[],
-              customLang,
+              { customLanguages: customLang },
             )
-          : await this.messageService.getRequestErrorsMessage(
+          : this.messageService.getRequestErrorsMessage(
               errors as ValidationError[],
-              customLang,
+              { customLanguages: customLang },
             );
       return errors;
     }
@@ -238,7 +239,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
 
   getResponseExpress({
     responseExpress,
-    customLang,
+    __customLang,
     __timestamp,
     __timezone,
     __requestId,
@@ -248,7 +249,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     resResponse,
   }: {
     responseExpress: Response;
-    customLang: string[];
+    __customLang: string[];
     __timestamp: number;
     __timezone: string;
     __requestId: string;
@@ -258,7 +259,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
     resResponse: IErrorHttpFilter;
   }) {
     return responseExpress
-      .setHeader('x-custom-lang', customLang)
+      .setHeader('x-custom-lang', __customLang)
       .setHeader('x-timestamp', __timestamp)
       .setHeader('x-timezone', __timezone)
       .setHeader('x-request-id', __requestId)

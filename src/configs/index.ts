@@ -3,6 +3,7 @@ import DatabaseConfig from './database.config';
 import AuthConfig from './auth.config';
 import DocConfig from './doc.config';
 import RequestConfig from './request.config';
+import MessageConfig from './message.config';
 
 export default [
   AppConfig,
@@ -10,4 +11,5 @@ export default [
   AuthConfig,
   DocConfig,
   RequestConfig,
+  MessageConfig,
 ];

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IHelperStringService } from '../interfaces/helper.string-serive.interface';
+import { IHelperStringService } from '../interfaces/helper.string-service.interface';
 
 @Injectable()
 export class HelperStringService implements IHelperStringService {
