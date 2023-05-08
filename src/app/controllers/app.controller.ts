@@ -10,8 +10,8 @@ import {
 import { Response } from 'src/common/response/decorators/response.decorator';
 import { IResponse } from 'src/common/response/interfaces/response.interface';
 import { IResult } from 'ua-parser-js';
-import { AppHelloApiKeyDoc, AppHelloDoc } from './docs/app.doc';
-import { AppHelloSerialization } from './serializations/app.hello.serialization';
+import { AppHelloApiKeyDoc, AppHelloDoc } from '../docs/app.doc';
+import { AppHelloSerialization } from '../serializations/app.hello.serialization';
 
 @ApiTags('hello')
 @Controller({

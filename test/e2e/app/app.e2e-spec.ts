@@ -40,7 +40,7 @@ describe('E2E User Public', () => {
     expect(body.statusCode).toBe(200);
   });
 
-  it.only('should return 200 /hello/api-key', async () => {
+  it('should return 200 /hello/api-key', async () => {
     const { body } = await request(app.getHttpServer())
       .get('/hello/api-key')
       .set('x-api-key', `${apiKey[0]}:${apiKey[1]}`);
