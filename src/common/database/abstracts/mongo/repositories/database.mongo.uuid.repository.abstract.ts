@@ -1,29 +1,21 @@
 import { Model } from 'mongoose';
-import { IDatabaseRepository } from 'src/common/database/interfaces/database.repository.interface';
 import { DatabaseBaseRepositoryAbstract } from '../../database.base-repository.abstract';
 
-export abstract class DatabaseMongoUUIDRepositoryAbstract<T>
-  extends DatabaseBaseRepositoryAbstract<T>
-  implements IDatabaseRepository<T>
-{
-  protected _repository: Model<T>;
+export abstract class DatabaseMongoUUIDRepositoryAbstract<
+  Entity,
+  EntityDocument,
+> extends DatabaseBaseRepositoryAbstract<EntityDocument> {
+  protected _repository: Model<Entity>;
 
-  constructor(repository: Model<T>) {
+  constructor(repository: Model<Entity>) {
     super();
     this._repository = repository;
   }
 
-  /**
-   * Creates a new instance of the entity in the database.
-   *
-   * @typeparam N The type of the data used to create the entity.
-   * @param data The data used to create the entity.
-   * @returns A promise that resolves to the created entity.
-   */
-  async create<N>(data: N): Promise<T> {
+  async create<Dto = any>(data: Dto): Promise<EntityDocument> {
     const dataCreate: Record<string, any> = data;
     const create = await this._repository.create([dataCreate]);
-    return create[0].toObject();
+    return create[0] as EntityDocument;
   }
 
   async exists(
@@ -52,9 +44,15 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<T>
     }
   }
 
-  async findOneById<Y = T>(_id: string): Promise<Y> {
+  async findOneById<T = EntityDocument>(_id: string): Promise<T> {
     const findOne = this._repository.findById(_id);
 
-    return findOne.lean();
+    return findOne.exec() as any;
+  }
+
+  async findOne<T = EntityDocument>(find: Record<string, any>): Promise<T> {
+    const findOne = this._repository.findOne<EntityDocument>(find);
+
+    return findOne.exec() as any;
   }
 }

@@ -8,12 +8,17 @@ import {
 
 @Injectable()
 export class HelperDateService {
-  /**
-   * create date
-   * @returns Date
-   * */
-  create(): Date {
-    return moment().toDate();
+  create(
+    date?: string | number | Date,
+    options?: IHelperDateOptionsCreate,
+  ): Date {
+    const mDate = moment(date ?? undefined);
+
+    if (options?.startOfDay) {
+      mDate.startOf('day');
+    }
+
+    return mDate.toDate();
   }
 
   forwardInMilliseconds(milliseconds: number): Date {
@@ -42,5 +47,13 @@ export class HelperDateService {
 
     if (options?.startOfDay) mDate.startOf('day');
     return mDate.valueOf();
+  }
+
+  startOfDay(date?: Date): Date {
+    return moment(date).startOf('day').toDate();
+  }
+
+  endOfDay(date?: Date): Date {
+    return moment(date).endOf('day').toDate();
   }
 }

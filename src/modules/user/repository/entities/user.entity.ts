@@ -66,3 +66,5 @@ export class UserEntity extends DatabaseMongoUUIDEntityAbstract {
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserEntity);
+
+export type UserDoc = UserEntity & Document;

@@ -1,6 +1,7 @@
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
+import { ApiKeyPublicProtected } from 'src/common/api-key/decorators/api-key.decorator';
 import { HelperDateService } from 'src/common/helper/services/helper.date.service';
 import {
   RequestTimeout,
@@ -9,7 +10,7 @@ import {
 import { Response } from 'src/common/response/decorators/response.decorator';
 import { IResponse } from 'src/common/response/interfaces/response.interface';
 import { IResult } from 'ua-parser-js';
-import { AppHelloDoc } from './docs/app.doc';
+import { AppHelloApiKeyDoc, AppHelloDoc } from './docs/app.doc';
 import { AppHelloSerialization } from './serializations/app.hello.serialization';
 
 @ApiTags('hello')
@@ -29,9 +30,37 @@ export class AppController {
 
   @AppHelloDoc()
   @Response('app.hello', { serialization: AppHelloSerialization })
+  // TODO: add LOGGER
   @Get('/hello')
   async hello(@RequestUserAgent() userAgent: IResult): Promise<IResponse> {
     const newDate = this.helperDateService.create();
+    return {
+      _metadata: {
+        customProperty: {
+          messageProperties: {
+            serviceName: this.serviceName,
+          },
+        },
+      },
+      data: {
+        userAgent,
+        date: newDate,
+        format: this.helperDateService.format(newDate),
+        timestamp: this.helperDateService.timestamp(newDate),
+      },
+    };
+  }
+
+  @AppHelloApiKeyDoc()
+  @Response('app.hello', { serialization: AppHelloSerialization })
+  @ApiKeyPublicProtected()
+  // TODO: add LOGGER
+  @Get('/hello/api-key')
+  async helloApiKey(
+    @RequestUserAgent() userAgent: IResult,
+  ): Promise<IResponse> {
+    const newDate = this.helperDateService.create();
+
     return {
       _metadata: {
         customProperty: {

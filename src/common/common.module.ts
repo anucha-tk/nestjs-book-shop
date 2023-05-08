@@ -15,6 +15,7 @@ import { RequestModule } from './request/request.module';
 import { DatabaseOptionsModule } from './database/database.options.module';
 import { DATABASE_CONNECTION_NAME } from './database/constants/database.constant';
 import { ErrorModule } from './error/error.module';
+import { ApiKeyModule } from './api-key/api-key.module';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { ErrorModule } from './error/error.module';
     MessageModule,
     ResponseModule,
     HelperModule,
+    ApiKeyModule,
     AuthModule,
   ],
 })
