@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { DebuggerModule } from '../debugger/debugger.module';
 import { ErrorHttpFilter } from './filters/error.http.filter';
 import { ErrorMetaGuard } from './guards/error.meta.guard';
 
@@ -12,6 +13,6 @@ import { ErrorMetaGuard } from './guards/error.meta.guard';
       useClass: ErrorMetaGuard,
     },
   ],
-  imports: [],
+  imports: [DebuggerModule.forRoot()],
 })
 export class ErrorModule {}

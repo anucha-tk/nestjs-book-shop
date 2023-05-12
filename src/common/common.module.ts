@@ -17,6 +17,7 @@ import { DATABASE_CONNECTION_NAME } from './database/constants/database.constant
 import { ErrorModule } from './error/error.module';
 import { ApiKeyModule } from './api-key/api-key.module';
 import { LoggerModule } from './logger/logger.module';
+import { DebuggerModule } from './debugger/debugger.module';
 
 @Module({
   imports: [
@@ -46,6 +47,18 @@ import { LoggerModule } from './logger/logger.module';
         HTTP_PORT: Joi.number().default(3000).required(),
         HTTP_VERSIONING_ENABLE: Joi.boolean().default(true).required(),
         HTTP_VERSION: Joi.number().required(),
+        // Debugger
+        DEBUGGER_HTTP_WRITE_INTO_FILE: Joi.boolean().default(false).required(),
+        DEBUGGER_HTTP_WRITE_INTO_CONSOLE: Joi.boolean()
+          .default(false)
+          .required(),
+        DEBUGGER_SYSTEM_WRITE_INTO_FILE: Joi.boolean()
+          .default(false)
+          .required(),
+        DEBUGGER_SYSTEM_WRITE_INTO_CONSOLE: Joi.boolean()
+          .default(false)
+          .required(),
+
         // database
         DATABASE_HOST: Joi.string()
           .default('mongodb://localhost:27017')
@@ -88,6 +101,7 @@ import { LoggerModule } from './logger/logger.module';
     HelperModule,
     ApiKeyModule,
     AuthModule,
+    DebuggerModule.forRoot(),
   ],
 })
 export class CommonModule {}

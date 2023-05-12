@@ -4,6 +4,7 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Optional,
 } from '@nestjs/common';
 import { HttpArgumentsHost, ValidationError } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
@@ -22,6 +23,7 @@ import {
 import { ERROR_TYPE } from '../constants/error.enum.constant';
 import { MessageService } from 'src/common/message/services/message.service';
 import { IMessage } from 'src/common/message/interfaces/message.interface';
+import { DebuggerService } from 'src/common/debugger/services/debugger.service';
 
 @Catch()
 export class ErrorHttpFilter implements ExceptionFilter {
@@ -30,6 +32,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
   private readonly repoVersion: string;
 
   constructor(
+    @Optional() private readonly debuggerService: DebuggerService,
     private readonly helperDateService: HelperDateService,
     private readonly configService: ConfigService,
     private readonly messageService: MessageService,
@@ -55,7 +58,24 @@ export class ErrorHttpFilter implements ExceptionFilter {
     const __version = request.__version ?? this.version;
     const __repoVersion = request.__repoVersion ?? this.repoVersion;
 
-    // TODO: try Debugger
+    // Debugger
+    try {
+      const __class = request.__class ?? ErrorHttpFilter.name;
+      const __function = request.__function ?? this.catch.name;
+      this.debuggerService.error(
+        request?.__id ? request.__id : ErrorHttpFilter.name,
+        {
+          description:
+            exception instanceof Error
+              ? exception.message
+              : exception.toString(),
+          class: __class ?? ErrorHttpFilter.name,
+          function: __function ?? this.catch.name,
+          path: __path,
+        },
+        exception,
+      );
+    } catch (err: unknown) {}
 
     let responseExpress: Response = ctx.getResponse<Response>();
     let statusHttp: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
