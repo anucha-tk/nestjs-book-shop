@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import { ApiKeyPublicProtected } from 'src/common/api-key/decorators/api-key.decorator';
 import { HelperDateService } from 'src/common/helper/services/helper.date.service';
+import { ENUM_LOGGER_ACTION } from 'src/common/logger/constants/logger.enum.constant';
+import { Logger } from 'src/common/logger/decorators/logger.decorator';
 import {
   RequestTimeout,
   RequestUserAgent,
@@ -30,7 +32,7 @@ export class AppController {
 
   @AppHelloDoc()
   @Response('app.hello', { serialization: AppHelloSerialization })
-  // TODO: add LOGGER
+  @Logger(ENUM_LOGGER_ACTION.TEST, { tags: ['test'] })
   @Get('/hello')
   async hello(@RequestUserAgent() userAgent: IResult): Promise<IResponse> {
     const newDate = this.helperDateService.create();
@@ -54,7 +56,7 @@ export class AppController {
   @AppHelloApiKeyDoc()
   @Response('app.hello', { serialization: AppHelloSerialization })
   @ApiKeyPublicProtected()
-  // TODO: add LOGGER
+  @Logger(ENUM_LOGGER_ACTION.TEST, { tags: ['test'] })
   @Get('/hello/api-key')
   async helloApiKey(
     @RequestUserAgent() userAgent: IResult,
@@ -80,6 +82,7 @@ export class AppController {
 
   @ApiExcludeEndpoint()
   @RequestTimeout('1s')
+  @Logger(ENUM_LOGGER_ACTION.TEST, { tags: ['test'] })
   @Get('/timeout')
   async timeout(): Promise<string> {
     await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for 2000 seconds

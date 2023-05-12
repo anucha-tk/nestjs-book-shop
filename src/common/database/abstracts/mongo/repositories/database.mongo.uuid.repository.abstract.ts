@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, PopulateOptions } from 'mongoose';
 import { DatabaseBaseRepositoryAbstract } from '../../database.base-repository.abstract';
 
 export abstract class DatabaseMongoUUIDRepositoryAbstract<
@@ -7,7 +7,10 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
 > extends DatabaseBaseRepositoryAbstract<EntityDocument> {
   protected _repository: Model<Entity>;
 
-  constructor(repository: Model<Entity>) {
+  constructor(
+    repository: Model<Entity>,
+    options?: PopulateOptions | PopulateOptions[],
+  ) {
     super();
     this._repository = repository;
   }
