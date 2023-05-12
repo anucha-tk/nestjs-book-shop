@@ -58,4 +58,16 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
 
     return findOne.exec() as any;
   }
+
+  // bulk
+  async createMany<Dto>(data: Dto[]): Promise<boolean> {
+    const create = this._repository.insertMany(data, {});
+
+    try {
+      await create;
+      return true;
+    } catch (err: unknown) {
+      throw err;
+    }
+  }
 }

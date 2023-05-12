@@ -21,7 +21,6 @@ export class DebuggerOptionService implements IDebuggerOptionService {
     const maxFiles = this.configService.get<string>('debugger.system.maxFiles');
 
     const transports = [];
-    console.log('writeIntoFile', writeIntoFile);
 
     if (writeIntoFile) {
       transports.push(
