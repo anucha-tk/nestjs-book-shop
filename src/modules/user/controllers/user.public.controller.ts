@@ -9,9 +9,11 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/common/auth/services/auth.service';
 import { ENUM_ERROR_STATUS_CODE_ERROR } from 'src/common/error/constants/error.status-code.constant';
 import { Response } from 'src/common/response/decorators/response.decorator';
+import { RoleService } from 'src/modules/role/services/role.service';
+import { ENUM_USER_SIGN_UP_FROM } from '../constants/user.enum.constant';
 import { ENUM_USER_STATUS_CODE_ERROR } from '../constants/user.status-code';
-import { UserSignUpDoc } from '../docs/user.public.doc';
-import { UserSignupDto } from '../dtos/user.sign-up.dto';
+import { UserPublicSignUpDoc } from '../docs/user.public.doc';
+import { UserSignUpDto } from '../dtos/user.sign-up.dto';
 import { UserService } from '../services/user.service';
 
 @ApiTags('modules.public.user')
@@ -20,36 +22,37 @@ export class UserPublicController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+    private readonly roleService: RoleService,
   ) {}
 
-  @UserSignUpDoc()
+  @UserPublicSignUpDoc()
   @Response('user.signUp')
   @Post('/sign-up')
-  async signup(
+  async signUp(
     @Body()
-    { email, mobileNumber, ...body }: UserSignupDto,
+    { email, mobileNumber, ...body }: UserSignUpDto,
   ): Promise<void> {
-    // TODO: add role
-
-    const [emailExist, mobileNumberExist] = await Promise.all([
+    const promises: Promise<any>[] = [
+      this.roleService.findOneByName('user'),
       this.userService.existByEmail(email),
-      this.userService.existByMobileNumber(mobileNumber),
-    ]);
+    ];
 
-    switch (true) {
-      case emailExist:
-        throw new ConflictException({
-          statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
-          message: 'user.error.emailExist',
-        });
-      case mobileNumberExist:
-        throw new ConflictException({
-          statusCode:
-            ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
-          message: 'user.error.mobileNumberExist',
-        });
-      default:
-        break;
+    if (mobileNumber) {
+      promises.push(this.userService.existByMobileNumber(mobileNumber));
+    }
+
+    const [role, emailExist, mobileNumberExist] = await Promise.all(promises);
+
+    if (emailExist) {
+      throw new ConflictException({
+        statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
+        message: 'user.error.emailExist',
+      });
+    } else if (mobileNumberExist) {
+      throw new ConflictException({
+        statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
+        message: 'user.error.mobileNumberExist',
+      });
     }
 
     try {
@@ -59,16 +62,19 @@ export class UserPublicController {
         {
           email,
           mobileNumber,
+          signUpFrom: ENUM_USER_SIGN_UP_FROM.LOCAL,
+          role: role._id,
           ...body,
         },
         password,
       );
+
       return;
     } catch (err: any) {
       throw new InternalServerErrorException({
         statusCode: ENUM_ERROR_STATUS_CODE_ERROR.ERROR_UNKNOWN,
         message: 'http.serverError.internalServerError',
-        error: err.message,
+        _error: err.message,
       });
     }
   }

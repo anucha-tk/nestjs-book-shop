@@ -23,3 +23,7 @@ export interface IHelperJwtOptions extends IHelperJwtVerifyOptions {
   expiredIn: number | string;
   notBefore?: number | string;
 }
+
+export interface IHelperDateOptionsForward {
+  fromDate?: Date;
+}

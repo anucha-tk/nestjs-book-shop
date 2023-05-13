@@ -19,10 +19,11 @@ export class AuthService {
   private readonly refreshTokenExpirationTimeRememberMe: string;
   private readonly refreshTokenNotBeforeExpirationTime: string;
 
+  private readonly passwordExpiredIn: number;
+
   constructor(
     private helperHashService: HelperHashService,
     private helperDateService: HelperDateService,
-    private helperEncryptionService: HelperEncryptionService,
     private configService: ConfigService,
   ) {
     this.accessTokenSecretToken = this.configService.get<string>(
@@ -47,25 +48,28 @@ export class AuthService {
     this.refreshTokenNotBeforeExpirationTime = this.configService.get<string>(
       'auth.jwt.refreshToken.notBeforeExpirationTime',
     );
+
+    this.passwordExpiredIn = this.configService.get<number>(
+      'auth.password.expiredIn',
+    );
+  }
+
+  async createSalt(length: number): Promise<string> {
+    return this.helperHashService.randomSalt(length);
   }
 
   async createPassword(password: string): Promise<IAuthPassword> {
-    const saltLength = this.configService.get<number>(
-      'auth.password.saltLength',
-    );
-    const salt = this.helperHashService.randomSalt(saltLength);
+    const salt: string = await this.createSalt(9);
 
-    const passwordExpiredInMs = this.configService.get<number>(
-      'auth.password.expiredInMs',
+    const passwordExpired: Date = this.helperDateService.forwardInSeconds(
+      this.passwordExpiredIn,
     );
-    const passwordExpired: Date =
-      this.helperDateService.forwardInMilliseconds(passwordExpiredInMs);
-
+    const passwordCreated: Date = this.helperDateService.create();
     const passwordHash = this.helperHashService.bcrypt(password, salt);
-
     return {
       passwordHash,
       passwordExpired,
+      passwordCreated,
       salt,
     };
   }
@@ -94,25 +98,25 @@ export class AuthService {
     };
   }
 
-  async createAccessToken(payload: Record<string, any>): Promise<string> {
-    return this.helperEncryptionService.jwtEncrypt(payload, {
-      secretKey: this.accessTokenSecretToken,
-      expiredIn: this.accessTokenExpirationTime,
-      notBefore: this.accessTokenNotBeforeExpirationTime,
-    });
-  }
+  // async createAccessToken(payload: Record<string, any>): Promise<string> {
+  //   return this.helperEncryptionService.jwtEncrypt(payload, {
+  //     secretKey: this.accessTokenSecretToken,
+  //     expiredIn: this.accessTokenExpirationTime,
+  //     notBefore: this.accessTokenNotBeforeExpirationTime,
+  //   });
+  // }
 
-  async createRefreshToken(
-    payload: Record<string, any>,
-    rememberMe: boolean,
-    test?: boolean,
-  ): Promise<string> {
-    return this.helperEncryptionService.jwtEncrypt(payload, {
-      secretKey: this.refreshTokenSecretToken,
-      expiredIn: rememberMe
-        ? this.refreshTokenExpirationTimeRememberMe
-        : this.refreshTokenExpirationTime,
-      notBefore: test ? '0' : this.refreshTokenNotBeforeExpirationTime,
-    });
-  }
+  // async createRefreshToken(
+  //   payload: Record<string, any>,
+  //   rememberMe: boolean,
+  //   test?: boolean,
+  // ): Promise<string> {
+  //   return this.helperEncryptionService.jwtEncrypt(payload, {
+  //     secretKey: this.refreshTokenSecretToken,
+  //     expiredIn: rememberMe
+  //       ? this.refreshTokenExpirationTimeRememberMe
+  //       : this.refreshTokenExpirationTime,
+  //     notBefore: test ? '0' : this.refreshTokenNotBeforeExpirationTime,
+  //   });
+  // }
 }

@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { RoleCreateDto } from '../dtos/role.create.dto';
 import { IRoleService } from '../interfaces/role.service.interface';
-import { RoleEntity } from '../repository/entities/role.entity';
+import { RoleDoc, RoleEntity } from '../repository/entities/role.entity';
 import { RoleRepository } from '../repository/repositories/role.repository';
 
 @Injectable()
 export class RoleService implements IRoleService {
   constructor(private readonly roleRepository: RoleRepository) {}
+
+  findOneByName = async (name: string): Promise<RoleDoc> =>
+    this.roleRepository.findOne<RoleDoc>({ name });
 
   async createMany(data: RoleCreateDto[]): Promise<boolean> {
     const create: RoleEntity[] = data.map(({ type, name, permissions }) => {

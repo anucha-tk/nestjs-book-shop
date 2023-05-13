@@ -1,5 +1,6 @@
 import { registerAs } from '@nestjs/config';
 import ms from 'ms';
+import { seconds } from 'src/common/helper/constants/helper.function.constant';
 
 export default registerAs(
   'auth',
@@ -28,8 +29,10 @@ export default registerAs(
       },
     },
     password: {
+      attempt: true,
+      maxAttempt: 5,
       saltLength: 8,
-      expiredInMs: ms('182d'),
+      expiredIn: seconds('182d'), // 182 days
     },
   }),
 );

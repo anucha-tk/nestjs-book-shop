@@ -1,27 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
+import { HelperDateService } from 'src/common/helper/services/helper.date.service';
 import { UserCreateDto } from '../dtos/user.create.dto';
-import { UserEntity } from '../repository/entities/user.entity';
+import { IUserService } from '../interfaces/user.service.interface';
+import { UserDoc, UserEntity } from '../repository/entities/user.entity';
 import { UserRepository } from '../repository/repositories/user.repository';
 
 @Injectable()
-export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+export class UserService implements IUserService {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly helperDateService: HelperDateService,
+  ) {}
 
   async create(
-    { firstName, lastName, email, mobileNumber }: UserCreateDto,
-    { salt, passwordHash, passwordExpired }: IAuthPassword,
-  ): Promise<UserEntity> {
+    {
+      firstName,
+      lastName,
+      email,
+      mobileNumber,
+      role,
+      signUpFrom,
+    }: UserCreateDto,
+    { passwordExpired, passwordHash, salt, passwordCreated }: IAuthPassword,
+  ): Promise<UserDoc> {
     const create: UserEntity = new UserEntity();
     create.firstName = firstName;
-    create.lastName = lastName;
     create.email = email;
-    create.salt = salt;
-    create.isActive = true;
     create.password = passwordHash;
+    create.role = role;
+    create.isActive = true;
+    create.inactivePermanent = false;
+    create.blocked = false;
+    create.lastName = lastName;
+    create.salt = salt;
     create.passwordExpired = passwordExpired;
-    create.mobileNumber = mobileNumber;
-    return this.userRepository.create(create);
+    create.passwordCreated = passwordCreated;
+    create.signUpDate = this.helperDateService.create();
+    create.passwordAttempt = 0;
+    create.mobileNumber = mobileNumber ?? undefined;
+    create.signUpFrom = signUpFrom;
+
+    return this.userRepository.create<UserEntity>(create);
   }
 
   async existByEmail(email: string): Promise<boolean> {

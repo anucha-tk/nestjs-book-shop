@@ -4,6 +4,7 @@ import { ENUM_HELPER_DATE_FORMAT } from '../constants/helper.enum.constant';
 import {
   IHelperDateOptionsCreate,
   IHelperDateOptionsFormat,
+  IHelperDateOptionsForward,
 } from '../interfaces/helper.interface';
 
 @Injectable()
@@ -55,5 +56,9 @@ export class HelperDateService {
 
   endOfDay(date?: Date): Date {
     return moment(date).endOf('day').toDate();
+  }
+
+  forwardInSeconds(seconds: number, options?: IHelperDateOptionsForward): Date {
+    return moment(options?.fromDate).add(seconds, 's').toDate();
   }
 }
