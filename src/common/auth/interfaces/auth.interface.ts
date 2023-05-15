@@ -1,3 +1,5 @@
+import { ENUM_AUTH_LOGIN_WITH } from '../constants/auth.enum.constant';
+
 export interface IAuthPassword {
   salt: string;
   passwordHash: string;
@@ -6,5 +8,9 @@ export interface IAuthPassword {
 }
 
 export interface IAuthPayloadOptions {
-  loginDate: Date;
+  loginWith: ENUM_AUTH_LOGIN_WITH;
+}
+
+export interface IAuthRefreshTokenOptions {
+  notBeforeExpirationTime?: number | string;
 }

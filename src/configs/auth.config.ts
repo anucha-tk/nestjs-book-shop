@@ -1,33 +1,38 @@
 import { registerAs } from '@nestjs/config';
-import ms from 'ms';
 import { seconds } from 'src/common/helper/constants/helper.function.constant';
 
 export default registerAs(
   'auth',
   (): Record<string, any> => ({
-    jwt: {
-      accessToken: {
-        secretKey: process.env.AUTH_JWT_ACCESS_TOKEN_SECRET_KEY || '123456',
-        expirationTime: process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED
-          ? ms(process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED)
-          : ms('30m'), // recommendation for production is 30m
-        notBeforeExpirationTime: ms(0), // keep it in zero value
-      },
-      refreshToken: {
-        secretKey: process.env.AUTH_JWT_REFRESH_TOKEN_SECRET_KEY || '123456000',
-        expirationTime: process.env.AUTH_JWT_REFRESH_TOKEN_EXPIRED
-          ? ms(process.env.AUTH_JWT_REFRESH_TOKEN_EXPIRED)
-          : ms('7d'), // recommendation for production is 7d
-        expirationTimeRememberMe: process.env
-          .AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED
-          ? ms(process.env.AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED)
-          : ms('30d'), // recommendation for production is 30d
-        notBeforeExpirationTime: process.env
-          .AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION
-          ? ms(process.env.AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION)
-          : ms('30m'), // recommendation for production is 30m
-      },
+    accessToken: {
+      secretKey: process.env.AUTH_JWT_ACCESS_TOKEN_SECRET_KEY ?? '123456',
+      expirationTime: seconds(
+        process.env.AUTH_JWT_ACCESS_TOKEN_EXPIRED ?? '1h',
+      ), // 1 hours
+      notBeforeExpirationTime: seconds('0'), // immediately
+
+      encryptKey: process.env.AUTH_JWT_PAYLOAD_ACCESS_TOKEN_ENCRYPT_KEY,
+      encryptIv: process.env.AUTH_JWT_PAYLOAD_ACCESS_TOKEN_ENCRYPT_IV,
     },
+
+    refreshToken: {
+      secretKey: process.env.AUTH_JWT_REFRESH_TOKEN_SECRET_KEY ?? '123456000',
+      expirationTime: seconds(
+        process.env.AUTH_JWT_REFRESH_TOKEN_EXPIRED ?? '14d',
+      ), // 14 days
+      notBeforeExpirationTime: seconds(
+        process.env.AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION ?? '1h',
+      ), // 1 hours
+
+      encryptKey: process.env.AUTH_JWT_PAYLOAD_REFRESH_TOKEN_ENCRYPT_KEY,
+      encryptIv: process.env.AUTH_JWT_PAYLOAD_REFRESH_TOKEN_ENCRYPT_IV,
+    },
+    subject: process.env.AUTH_JWT_SUBJECT ?? 'nestJsBookShopDevelopment',
+    audience: process.env.AUTH_JWT_AUDIENCE ?? 'https://example.com',
+    issuer: process.env.AUTH_JWT_ISSUER ?? 'nestjs_book_shop',
+    prefixAuthorization: 'Bearer',
+    payloadEncryption:
+      process.env.AUTH_JWT_PAYLOAD_ENCRYPT === 'true' ? true : false,
     password: {
       attempt: true,
       maxAttempt: 5,

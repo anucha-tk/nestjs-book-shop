@@ -15,5 +15,5 @@ export interface IResponseOptions<T> {
 
 export interface IResponse {
   _metadata?: IResponseMetadata;
-  [key: string]: any;
+  data?: Record<string, any>;
 }

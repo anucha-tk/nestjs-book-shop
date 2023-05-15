@@ -1,4 +1,4 @@
-import { Model, PopulateOptions } from 'mongoose';
+import { Model, PopulateOptions, Document } from 'mongoose';
 import { DatabaseBaseRepositoryAbstract } from '../../database.base-repository.abstract';
 
 export abstract class DatabaseMongoUUIDRepositoryAbstract<
@@ -69,5 +69,11 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
     } catch (err: unknown) {
       throw err;
     }
+  }
+
+  async save(
+    repository: EntityDocument & Document<string>,
+  ): Promise<EntityDocument> {
+    return repository.save();
   }
 }

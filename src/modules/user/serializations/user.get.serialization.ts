@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
+import { AwsS3Serialization } from 'src/common/aws/serializations/aws.s3.serialization';
 import { ResponseIdSerialization } from 'src/common/response/serializations/response.id.serialization';
 import { RoleGetSerialization } from 'src/modules/role/serializations/role.get.serialization';
 import { ENUM_USER_SIGN_UP_FROM } from 'src/modules/user/constants/user.enum.constant';
@@ -67,6 +68,11 @@ export class UserGetSerialization extends ResponseIdSerialization {
     example: faker.name.lastName(),
   })
   readonly lastName: string;
+
+  @ApiProperty({
+    allOf: [{ $ref: getSchemaPath(AwsS3Serialization) }],
+  })
+  readonly photo?: AwsS3Serialization;
 
   @Exclude()
   readonly password: string;

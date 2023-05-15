@@ -10,4 +10,6 @@ export abstract class DatabaseBaseRepositoryAbstract<Entity> {
   abstract findOne<T = Entity>(find: Record<string, any>): Promise<T>;
 
   abstract createMany<Dto>(data: Dto[]): Promise<boolean>;
+
+  abstract save(repository: Entity): Promise<Entity>;
 }

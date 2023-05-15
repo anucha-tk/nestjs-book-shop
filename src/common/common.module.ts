@@ -18,6 +18,7 @@ import { ErrorModule } from './error/error.module';
 import { ApiKeyModule } from './api-key/api-key.module';
 import { LoggerModule } from './logger/logger.module';
 import { DebuggerModule } from './debugger/debugger.module';
+import { SettingModule } from './setting/setting.module';
 
 @Module({
   imports: [
@@ -68,23 +69,53 @@ import { DebuggerModule } from './debugger/debugger.module';
         DATABASE_USER_PWD: Joi.string().required(),
         DATABASE_DEBUG: Joi.boolean().default(false).required(),
         DATABASE_OPTIONS: Joi.string().allow(null, '').optional(),
-        // JWT
+        // jwt
+        AUTH_JWT_SUBJECT: Joi.string().required(),
+        AUTH_JWT_AUDIENCE: Joi.string().required(),
+        AUTH_JWT_ISSUER: Joi.string().required(),
         AUTH_JWT_ACCESS_TOKEN_SECRET_KEY: Joi.string()
           .alphanum()
           .min(5)
           .max(50)
           .required(),
-        AUTH_JWT_ACCESS_TOKEN_EXPIRED: Joi.string().default('30m').required(),
+        AUTH_JWT_ACCESS_TOKEN_EXPIRED: Joi.string().default('15m').required(),
+
         AUTH_JWT_REFRESH_TOKEN_SECRET_KEY: Joi.string()
           .alphanum()
           .min(5)
           .max(50)
           .required(),
         AUTH_JWT_REFRESH_TOKEN_EXPIRED: Joi.string().default('7d').required(),
-        AUTH_JWT_REFRESH_TOKEN_REMEMBER_ME_EXPIRED: Joi.string()
-          .default('30d')
+        AUTH_JWT_REFRESH_TOKEN_NOT_BEFORE_EXPIRATION: Joi.string()
+          .default('15m')
           .required(),
+
+        AUTH_JWT_PAYLOAD_ENCRYPT: Joi.boolean().default(false).required(),
+        AUTH_JWT_PAYLOAD_ACCESS_TOKEN_ENCRYPT_KEY: Joi.string()
+          .allow(null, '')
+          .min(20)
+          .max(50)
+          .optional(),
+        AUTH_JWT_PAYLOAD_ACCESS_TOKEN_ENCRYPT_IV: Joi.string()
+          .allow(null, '')
+          .min(16)
+          .max(50)
+          .optional(),
+        AUTH_JWT_PAYLOAD_REFRESH_TOKEN_ENCRYPT_KEY: Joi.string()
+          .allow(null, '')
+          .min(20)
+          .max(50)
+          .optional(),
+        AUTH_JWT_PAYLOAD_REFRESH_TOKEN_ENCRYPT_IV: Joi.string()
+          .allow(null, '')
+          .min(16)
+          .max(50)
+          .optional(),
       }),
+      validationOptions: {
+        allowUnknown: true,
+        abortEarly: true,
+      },
     }),
     MongooseModule.forRootAsync({
       connectionName: DATABASE_CONNECTION_NAME,
@@ -101,6 +132,7 @@ import { DebuggerModule } from './debugger/debugger.module';
     HelperModule,
     ApiKeyModule,
     AuthModule,
+    SettingModule,
     DebuggerModule.forRoot(),
   ],
 })

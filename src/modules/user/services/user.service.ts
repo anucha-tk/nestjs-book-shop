@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
 import { HelperDateService } from 'src/common/helper/services/helper.date.service';
+import { RoleEntity } from 'src/modules/role/repository/entities/role.entity';
 import { UserCreateDto } from '../dtos/user.create.dto';
+import { IUserDoc } from '../interfaces/user.interface';
 import { IUserService } from '../interfaces/user.service.interface';
 import { UserDoc, UserEntity } from '../repository/entities/user.entity';
 import { UserRepository } from '../repository/repositories/user.repository';
+import { UserPayloadSerialization } from '../serializations/user.payload.serialization';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -12,6 +16,10 @@ export class UserService implements IUserService {
     private readonly userRepository: UserRepository,
     private readonly helperDateService: HelperDateService,
   ) {}
+
+  async findOneByEmail<T>(email: string): Promise<T> {
+    return this.userRepository.findOne<T>({ email });
+  }
 
   async create(
     {
@@ -66,39 +74,31 @@ export class UserService implements IUserService {
   async findOneById<T>(_id: string): Promise<T> {
     return this.userRepository.findOneById<T>(_id);
   }
-  // async checkExist(
-  //   email: string,
-  //   mobileNumber: string,
-  // ): Promise<IUserCheckExist> {
-  //   const [existEmail, existMobileNumber] = await Promise.all([
-  //     this.userRepository.exists({
-  //       email: { $regex: new RegExp(email), $options: 'i' },
-  //     }),
-  //     this.userRepository.exists({ mobileNumber }),
-  //   ]);
 
-  //   return {
-  //     email: Boolean(existEmail),
-  //     mobileNumber: Boolean(existMobileNumber),
-  //   };
-  // }
+  async increasePasswordAttempt(repository: UserDoc): Promise<UserDoc> {
+    repository.passwordAttempt = ++repository.passwordAttempt;
 
-  // // TODO: populate role
-  // async findOneById<T>(_id: string): Promise<T> {
-  //   const user = this.userRepository.findById(_id);
-  //   return user.lean();
-  // }
+    return this.userRepository.save(repository);
+  }
 
-  // async payloadSerialization(
-  //   data: IUserDocument,
-  // ): Promise<UserPayloadSerialization> {
-  //   return plainToInstance(UserPayloadSerialization, data);
-  // }
+  async joinWithRole(repository: UserDoc): Promise<IUserDoc> {
+    return repository.populate({
+      path: 'role',
+      localField: 'role',
+      foreignField: '_id',
+      model: RoleEntity.name,
+    });
+  }
 
-  // async deleteMany(
-  //     find: Record<string, any>,
-  //     options?: IDatabaseManyOptions
-  // ): Promise<boolean> {
-  //     return this.userModel.deleteMany(find, options);
-  // }
+  async resetPasswordAttempt(repository: UserDoc): Promise<UserDoc> {
+    repository.passwordAttempt = 0;
+
+    return this.userRepository.save(repository);
+  }
+
+  async payloadSerialization(
+    data: IUserDoc,
+  ): Promise<UserPayloadSerialization> {
+    return plainToInstance(UserPayloadSerialization, data.toObject());
+  }
 }
