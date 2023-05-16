@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
-import { IDatabaseFindOneOptions } from 'src/common/database/interfaces/database.interface';
+import {
+  IDatabaseFindOneOptions,
+  IDatabaseSaveOptions,
+} from 'src/common/database/interfaces/database.interface';
 import { HelperDateService } from 'src/common/helper/services/helper.date.service';
 import { RoleEntity } from 'src/modules/role/repository/entities/role.entity';
 import { UserCreateDto } from '../dtos/user.create.dto';
@@ -104,5 +107,18 @@ export class UserService implements IUserService {
     data: IUserDoc,
   ): Promise<UserPayloadSerialization> {
     return plainToInstance(UserPayloadSerialization, data.toObject());
+  }
+
+  async updatePassword(
+    repository: UserDoc,
+    { passwordHash, passwordExpired, salt, passwordCreated }: IAuthPassword,
+    options?: IDatabaseSaveOptions,
+  ): Promise<UserDoc> {
+    repository.password = passwordHash;
+    repository.passwordExpired = passwordExpired;
+    repository.passwordCreated = passwordCreated;
+    repository.salt = salt;
+
+    return this.userRepository.save(repository, options);
   }
 }

@@ -1,5 +1,8 @@
 import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
-import { IDatabaseFindOneOptions } from 'src/common/database/interfaces/database.interface';
+import {
+  IDatabaseFindOneOptions,
+  IDatabaseSaveOptions,
+} from 'src/common/database/interfaces/database.interface';
 import { UserCreateDto } from '../dtos/user.create.dto';
 import { UserDoc } from '../repository/entities/user.entity';
 import { UserPayloadSerialization } from '../serializations/user.payload.serialization';
@@ -16,4 +19,9 @@ export interface IUserService {
   joinWithRole(repository: UserDoc): Promise<IUserDoc>;
   resetPasswordAttempt(repository: UserDoc): Promise<UserDoc>;
   payloadSerialization(data: IUserDoc): Promise<UserPayloadSerialization>;
+  updatePassword(
+    repository: UserDoc,
+    { passwordHash, passwordExpired, salt, passwordCreated }: IAuthPassword,
+    options?: IDatabaseSaveOptions,
+  ): Promise<UserDoc>;
 }

@@ -28,3 +28,13 @@ export function UserAuthInfoDoc(): MethodDecorator {
     }),
   );
 }
+
+export function UserAuthChangePasswordDoc(): MethodDecorator {
+  return applyDecorators(
+    Doc<void>('user.changePassword', {
+      auth: {
+        jwtAccessToken: true,
+      },
+    }),
+  );
+}

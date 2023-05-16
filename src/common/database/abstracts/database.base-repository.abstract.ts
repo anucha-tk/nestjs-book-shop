@@ -1,4 +1,7 @@
-import { IDatabaseFindOneOptions } from '../interfaces/database.interface';
+import {
+  IDatabaseFindOneOptions,
+  IDatabaseSaveOptions,
+} from '../interfaces/database.interface';
 
 export abstract class DatabaseBaseRepositoryAbstract<Entity> {
   abstract create<Dto = any>(data: Dto): Promise<Entity>;
@@ -16,5 +19,8 @@ export abstract class DatabaseBaseRepositoryAbstract<Entity> {
 
   abstract createMany<Dto>(data: Dto[]): Promise<boolean>;
 
-  abstract save(repository: Entity): Promise<Entity>;
+  abstract save(
+    repository: Entity,
+    options?: IDatabaseSaveOptions,
+  ): Promise<Entity>;
 }

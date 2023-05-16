@@ -77,6 +77,9 @@ export class AuthService implements IAuthService {
     this.prefixAuthorization = this.configService.get<string>(
       'auth.prefixAuthorization',
     );
+    this.passwordExpiredIn = this.configService.get<number>(
+      'auth.password.expiredIn',
+    );
   }
 
   async createSalt(length: number): Promise<string> {

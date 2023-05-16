@@ -28,3 +28,8 @@ export interface IDatabaseFindOneOptions<T = any>
   session?: T;
   withDeleted?: boolean;
 }
+
+export type IDatabaseSaveOptions<T = any> = Pick<
+  IDatabaseFindOneOptions<T>,
+  'session'
+>;

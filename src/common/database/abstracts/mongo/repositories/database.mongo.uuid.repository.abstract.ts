@@ -1,5 +1,8 @@
 import { Model, PopulateOptions, Document, ClientSession } from 'mongoose';
-import { IDatabaseFindOneOptions } from 'src/common/database/interfaces/database.interface';
+import {
+  IDatabaseFindOneOptions,
+  IDatabaseSaveOptions,
+} from 'src/common/database/interfaces/database.interface';
 import { DatabaseBaseRepositoryAbstract } from '../../database.base-repository.abstract';
 
 export abstract class DatabaseMongoUUIDRepositoryAbstract<
@@ -86,7 +89,8 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
 
   async save(
     repository: EntityDocument & Document<string>,
+    options?: IDatabaseSaveOptions,
   ): Promise<EntityDocument> {
-    return repository.save();
+    return repository.save(options);
   }
 }
