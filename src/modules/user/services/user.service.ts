@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
+import { IDatabaseFindOneOptions } from 'src/common/database/interfaces/database.interface';
 import { HelperDateService } from 'src/common/helper/services/helper.date.service';
 import { RoleEntity } from 'src/modules/role/repository/entities/role.entity';
 import { UserCreateDto } from '../dtos/user.create.dto';
@@ -71,8 +72,11 @@ export class UserService implements IUserService {
     return this.userRepository.deleteMany(find);
   }
 
-  async findOneById<T>(_id: string): Promise<T> {
-    return this.userRepository.findOneById<T>(_id);
+  async findOneById<T>(
+    _id: string,
+    options?: IDatabaseFindOneOptions,
+  ): Promise<T> {
+    return this.userRepository.findOneById<T>(_id, options);
   }
 
   async increasePasswordAttempt(repository: UserDoc): Promise<UserDoc> {

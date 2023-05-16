@@ -131,7 +131,7 @@ import { SettingModule } from './setting/setting.module';
     LoggerModule,
     HelperModule,
     ApiKeyModule,
-    AuthModule,
+    AuthModule.forRoot(),
     SettingModule,
     DebuggerModule.forRoot(),
   ],

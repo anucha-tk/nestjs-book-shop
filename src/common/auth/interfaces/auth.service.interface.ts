@@ -5,6 +5,9 @@ import {
 } from './auth.interface';
 
 export interface IAuthService {
+  decryptAccessToken(
+    payload: Record<string, any>,
+  ): Promise<Record<string, any>>;
   encryptAccessToken(payload: Record<string, any>): Promise<string>;
   encryptRefreshToken(payload: Record<string, any>): Promise<string>;
   createSalt(length: number): Promise<string>;

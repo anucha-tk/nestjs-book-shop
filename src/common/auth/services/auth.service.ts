@@ -193,4 +193,14 @@ export class AuthService implements IAuthService {
 
     return today > passwordExpiredConvert;
   }
+
+  async decryptAccessToken({
+    data,
+  }: Record<string, any>): Promise<Record<string, any>> {
+    return this.helperEncryptionService.aes256Decrypt(
+      data,
+      this.accessTokenEncryptKey,
+      this.accessTokenEncryptIv,
+    ) as Record<string, any>;
+  }
 }

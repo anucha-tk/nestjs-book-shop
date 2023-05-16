@@ -1,4 +1,5 @@
-import { Model, PopulateOptions, Document } from 'mongoose';
+import { Model, PopulateOptions, Document, ClientSession } from 'mongoose';
+import { IDatabaseFindOneOptions } from 'src/common/database/interfaces/database.interface';
 import { DatabaseBaseRepositoryAbstract } from '../../database.base-repository.abstract';
 
 export abstract class DatabaseMongoUUIDRepositoryAbstract<
@@ -6,6 +7,7 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
   EntityDocument,
 > extends DatabaseBaseRepositoryAbstract<EntityDocument> {
   protected _repository: Model<Entity>;
+  protected _joinOnFind?: PopulateOptions | PopulateOptions[];
 
   constructor(
     repository: Model<Entity>,
@@ -13,6 +15,7 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
   ) {
     super();
     this._repository = repository;
+    this._joinOnFind = options;
   }
 
   async create<Dto = any>(data: Dto): Promise<EntityDocument> {
@@ -47,9 +50,19 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
     }
   }
 
-  async findOneById<T = EntityDocument>(_id: string): Promise<T> {
+  async findOneById<T = EntityDocument>(
+    _id: string,
+    options?: IDatabaseFindOneOptions<ClientSession>,
+  ): Promise<T> {
     const findOne = this._repository.findById(_id);
 
+    if (options?.join) {
+      findOne.populate(
+        typeof options.join === 'boolean'
+          ? this._joinOnFind
+          : (options.join as PopulateOptions | PopulateOptions[]),
+      );
+    }
     return findOne.exec() as any;
   }
 
