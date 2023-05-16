@@ -25,7 +25,7 @@ export const GetUser = createParamDecorator(
 );
 
 /**
- * @description decorator check have user and return req.__user with populate roles
+ * @description decorator check user exist and return req.__user with populate roles
  * @example can use with `@GetUser()` for get req.__user
  * */
 export function UserProtected(): MethodDecorator {
