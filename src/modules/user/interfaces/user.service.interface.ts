@@ -24,4 +24,8 @@ export interface IUserService {
     { passwordHash, passwordExpired, salt, passwordCreated }: IAuthPassword,
     options?: IDatabaseSaveOptions,
   ): Promise<UserDoc>;
+  inactivePermanent(
+    repository: UserDoc,
+    options?: IDatabaseSaveOptions,
+  ): Promise<UserDoc>;
 }

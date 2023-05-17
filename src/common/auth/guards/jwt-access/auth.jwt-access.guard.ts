@@ -3,7 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ENUM_AUTH_STATUS_CODE_ERROR } from 'src/common/auth/constants/auth.status-code.constant';
 
 /**
- * @description check must have err or user and add user to request
+ * @description check must have err or user exist, then add user to request
  * @example req.user
  * */
 @Injectable()

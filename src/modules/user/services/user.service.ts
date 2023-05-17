@@ -121,4 +121,15 @@ export class UserService implements IUserService {
 
     return this.userRepository.save(repository, options);
   }
+
+  async inactivePermanent(
+    repository: UserDoc,
+    options?: IDatabaseSaveOptions,
+  ): Promise<UserDoc> {
+    repository.isActive = false;
+    repository.inactivePermanent = true;
+    repository.inactiveDate = this.helperDateService.create();
+
+    return this.userRepository.save(repository, options);
+  }
 }
