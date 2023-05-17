@@ -1,5 +1,8 @@
-import { RoleDoc } from 'src/modules/role/repository/entities/role.entity';
-import { UserDoc } from '../repository/entities/user.entity';
+import {
+  RoleDoc,
+  RoleEntity,
+} from 'src/modules/role/repository/entities/role.entity';
+import { UserDoc, UserEntity } from '../repository/entities/user.entity';
 
 export interface IUserGoogleEntity {
   accessToken: string;
@@ -11,4 +14,11 @@ export interface IUserGoogleEntity {
  * */
 export interface IUserDoc extends Omit<UserDoc, 'role'> {
   role: RoleDoc;
+}
+
+/**
+ * @description UserEntity with populate RoleEntity
+ * */
+export interface IUserEntity extends Omit<UserEntity, 'role'> {
+  role: RoleEntity;
 }

@@ -41,6 +41,7 @@
     "rollback": "yarn rollback:setting && yarn rollback:apikey && yarn rollback:user && yarn rollback:role"
   },
   "dependencies": {
+    "@casl/ability": "^6.5.0",
     "@faker-js/faker": "^7.6.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",

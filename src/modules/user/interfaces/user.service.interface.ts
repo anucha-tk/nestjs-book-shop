@@ -1,14 +1,19 @@
 import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
 import {
+  IDatabaseFindAllOptions,
   IDatabaseFindOneOptions,
   IDatabaseSaveOptions,
 } from 'src/common/database/interfaces/database.interface';
 import { UserCreateDto } from '../dtos/user.create.dto';
 import { UserDoc } from '../repository/entities/user.entity';
 import { UserPayloadSerialization } from '../serializations/user.payload.serialization';
-import { IUserDoc } from './user.interface';
+import { IUserDoc, IUserEntity } from './user.interface';
 
 export interface IUserService {
+  findAll(
+    find?: Record<string, any>,
+    options?: IDatabaseFindAllOptions,
+  ): Promise<IUserEntity[]>;
   findOneById<T>(_id: string, options?: IDatabaseFindOneOptions): Promise<T>;
   create(
     { firstName, lastName, email, mobileNumber, role }: UserCreateDto,

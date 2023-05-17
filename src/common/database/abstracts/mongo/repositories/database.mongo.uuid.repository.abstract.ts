@@ -1,6 +1,8 @@
 import { Model, PopulateOptions, Document, ClientSession } from 'mongoose';
 import {
+  IDatabaseFindAllOptions,
   IDatabaseFindOneOptions,
+  IDatabaseGetTotalOptions,
   IDatabaseSaveOptions,
 } from 'src/common/database/interfaces/database.interface';
 import { DatabaseBaseRepositoryAbstract } from '../../database.base-repository.abstract';
@@ -19,6 +21,39 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
     super();
     this._repository = repository;
     this._joinOnFind = options;
+  }
+
+  async findAll<T = EntityDocument>(
+    find?: Record<string, any>,
+    options?: IDatabaseFindAllOptions<ClientSession>,
+  ): Promise<T[]> {
+    const findAll = this._repository.find<EntityDocument>(find);
+
+    if (options?.select) {
+      findAll.select(options.select);
+    }
+
+    if (options?.paging) {
+      findAll.limit(options.paging.limit).skip(options.paging.offset);
+    }
+
+    if (options?.order) {
+      findAll.sort(options.order);
+    }
+
+    if (options?.join) {
+      findAll.populate(
+        typeof options.join === 'boolean'
+          ? this._joinOnFind
+          : (options.join as PopulateOptions | PopulateOptions[]),
+      );
+    }
+
+    if (options?.session) {
+      findAll.session(options.session);
+    }
+
+    return findAll.lean() as any;
   }
 
   async create<Dto = any>(data: Dto): Promise<EntityDocument> {
@@ -92,5 +127,22 @@ export abstract class DatabaseMongoUUIDRepositoryAbstract<
     options?: IDatabaseSaveOptions,
   ): Promise<EntityDocument> {
     return repository.save(options);
+  }
+
+  async getTotal(
+    find?: Record<string, any>,
+    options?: IDatabaseGetTotalOptions<ClientSession>,
+  ): Promise<number> {
+    const count = this._repository.countDocuments(find);
+
+    if (options?.join) {
+      count.populate(
+        typeof options.join === 'boolean'
+          ? this._joinOnFind
+          : (options.join as PopulateOptions | PopulateOptions[]),
+      );
+    }
+
+    return count;
   }
 }

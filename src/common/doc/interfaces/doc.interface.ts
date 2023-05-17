@@ -6,6 +6,12 @@ import {
   ENUM_DOC_RESPONSE_BODY_TYPE,
 } from '../constants/doc.constant';
 
+export interface IDocOfOptions {
+  messagePath: string;
+  statusCode: number;
+  serialization?: ClassConstructor<any>;
+}
+
 export interface IDocDefaultOptions {
   httpStatus: HttpStatus;
   messagePath: string;
@@ -46,4 +52,15 @@ export interface IDocResponseOptions<T> {
   httpStatus?: HttpStatus;
   bodyType?: ENUM_DOC_RESPONSE_BODY_TYPE;
   serialization?: ClassConstructor<T>;
+}
+
+export interface IDocPagingResponseOptions<T>
+  extends Pick<IDocResponseOptions<T>, 'statusCode'> {
+  serialization: ClassConstructor<T>;
+}
+
+export interface IDocPagingOptions<T>
+  extends Omit<IDocOptions<T>, 'response' | 'request'> {
+  response: IDocPagingResponseOptions<T>;
+  request?: Omit<IDocRequestOptions, 'bodyType' | 'file'>;
 }

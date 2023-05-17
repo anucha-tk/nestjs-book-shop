@@ -1,25 +1,5 @@
 import { PopulateOptions } from 'mongoose';
-
-export enum ENUM_PAGINATION_ORDER_DIRECTION_TYPE {
-  ASC = 'asc',
-  DESC = 'desc',
-}
-
-//TODO:  move to pagination module
-export type IPaginationOrder = Record<
-  string,
-  ENUM_PAGINATION_ORDER_DIRECTION_TYPE
->;
-
-export interface IPaginationPaging {
-  limit: number;
-  offset: number;
-}
-
-export interface IPaginationOptions {
-  paging?: IPaginationPaging;
-  order?: IPaginationOrder;
-}
+import { IPaginationOptions } from 'src/common/pagination/interfaces/pagination.interface';
 
 export interface IDatabaseFindOneOptions<T = any>
   extends Pick<IPaginationOptions, 'order'> {
@@ -32,4 +12,13 @@ export interface IDatabaseFindOneOptions<T = any>
 export type IDatabaseSaveOptions<T = any> = Pick<
   IDatabaseFindOneOptions<T>,
   'session'
+>;
+
+export interface IDatabaseFindAllOptions<T = any>
+  extends IPaginationOptions,
+    Omit<IDatabaseFindOneOptions<T>, 'order'> {}
+
+export type IDatabaseGetTotalOptions<T = any> = Pick<
+  IDatabaseFindOneOptions<T>,
+  'session' | 'withDeleted' | 'join'
 >;

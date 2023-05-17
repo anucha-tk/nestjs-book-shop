@@ -2,13 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { IAuthPassword } from 'src/common/auth/interfaces/auth.interface';
 import {
+  IDatabaseFindAllOptions,
   IDatabaseFindOneOptions,
+  IDatabaseGetTotalOptions,
   IDatabaseSaveOptions,
 } from 'src/common/database/interfaces/database.interface';
 import { HelperDateService } from 'src/common/helper/services/helper.date.service';
 import { RoleEntity } from 'src/modules/role/repository/entities/role.entity';
 import { UserCreateDto } from '../dtos/user.create.dto';
-import { IUserDoc } from '../interfaces/user.interface';
+import { IUserDoc, IUserEntity } from '../interfaces/user.interface';
 import { IUserService } from '../interfaces/user.service.interface';
 import { UserDoc, UserEntity } from '../repository/entities/user.entity';
 import { UserRepository } from '../repository/repositories/user.repository';
@@ -20,6 +22,16 @@ export class UserService implements IUserService {
     private readonly userRepository: UserRepository,
     private readonly helperDateService: HelperDateService,
   ) {}
+
+  async findAll(
+    find?: Record<string, any>,
+    options?: IDatabaseFindAllOptions,
+  ): Promise<IUserEntity[]> {
+    return this.userRepository.findAll<IUserEntity>(find, {
+      ...options,
+      join: true,
+    });
+  }
 
   async findOneByEmail<T>(email: string): Promise<T> {
     return this.userRepository.findOne<T>({ email });
@@ -131,5 +143,12 @@ export class UserService implements IUserService {
     repository.inactiveDate = this.helperDateService.create();
 
     return this.userRepository.save(repository, options);
+  }
+
+  async getTotal(
+    find?: Record<string, any>,
+    options?: IDatabaseGetTotalOptions,
+  ): Promise<number> {
+    return this.userRepository.getTotal(find, { ...options, join: true });
   }
 }

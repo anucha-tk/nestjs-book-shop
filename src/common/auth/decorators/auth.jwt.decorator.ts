@@ -35,14 +35,30 @@ export function AuthJwtAccessProtected(): MethodDecorator {
 /**
  * @description this decorator have two guards
  * 1. `AuthJwtAccessGuard` jwt accessToken guard and set req.user
- * 2. `RolePayloadTypeGuard` check role required from META_KEY
+ * 2. `RolePayloadTypeGuard` check user role required from META_KEY
  * @example
  * how to get req.user - `@AuthJwtPayload()`
- * how to set role required - SetMetadata(ROLE_TYPE_META_KEY, [ENUM_ROLE_TYPE.USER]),
  * */
 export function AuthJwtUserAccessProtected(): MethodDecorator {
   return applyDecorators(
     UseGuards(AuthJwtAccessGuard, RolePayloadTypeGuard),
     SetMetadata(ROLE_TYPE_META_KEY, [ENUM_ROLE_TYPE.USER]),
+  );
+}
+
+/**
+ * @description this decorator have two guards
+ * 1. `AuthJwtAccessGuard` jwt accessToken guard and set req.user
+ * 2. `RolePayloadTypeGuard` check superadmin or admin role required from META_KEY
+ * @example
+ * how to get req.user - `@AuthJwtPayload()`
+ * */
+export function AuthJwtAdminAccessProtected(): MethodDecorator {
+  return applyDecorators(
+    UseGuards(AuthJwtAccessGuard, RolePayloadTypeGuard),
+    SetMetadata(ROLE_TYPE_META_KEY, [
+      ENUM_ROLE_TYPE.SUPER_ADMIN,
+      ENUM_ROLE_TYPE.ADMIN,
+    ]),
   );
 }

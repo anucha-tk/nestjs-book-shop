@@ -5,6 +5,7 @@ import { RoutesModule } from './routes/routes.module';
 import { RoutesAuthModule } from './routes/routes.auth.module';
 import { AppController } from 'src/app/controllers/app.controller';
 import { RoutesUserModule } from './routes/routes.user.module';
+import { RoutesAdminModule } from './routes/routes.admin.module';
 
 @Module({})
 export class RouterModule {
@@ -22,6 +23,7 @@ export class RouterModule {
         RoutesPublicModule,
         RoutesAuthModule,
         RoutesUserModule,
+        RoutesAdminModule,
         NestjsRouterModule.register([
           {
             path: '/public',
@@ -34,6 +36,10 @@ export class RouterModule {
           {
             path: '/user',
             module: RoutesUserModule,
+          },
+          {
+            path: '/admin',
+            module: RoutesAdminModule,
           },
         ]),
       );

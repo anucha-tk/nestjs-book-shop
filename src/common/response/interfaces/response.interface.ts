@@ -17,3 +17,16 @@ export interface IResponse {
   _metadata?: IResponseMetadata;
   data?: Record<string, any>;
 }
+
+export interface IResponsePagingPagination {
+  totalPage: number;
+  total: number;
+}
+
+export interface IResponsePaging {
+  _metadata?: IResponseMetadata;
+  _pagination: IResponsePagingPagination;
+  data: Record<string, any>[];
+}
+
+export type IResponsePagingOptions<T> = IResponseOptions<T>;

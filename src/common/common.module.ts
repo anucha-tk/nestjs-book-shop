@@ -19,6 +19,8 @@ import { ApiKeyModule } from './api-key/api-key.module';
 import { LoggerModule } from './logger/logger.module';
 import { DebuggerModule } from './debugger/debugger.module';
 import { SettingModule } from './setting/setting.module';
+import { PaginationModule } from './pagination/pagination.module';
+import { PolicyModule } from './policy/policy.module';
 
 @Module({
   imports: [
@@ -124,6 +126,7 @@ import { SettingModule } from './setting/setting.module';
       useFactory: (databaseOptionsService: DatabaseOptionsService) =>
         databaseOptionsService.createOptions(),
     }),
+    PaginationModule,
     ErrorModule,
     RequestModule,
     MessageModule,
@@ -134,6 +137,7 @@ import { SettingModule } from './setting/setting.module';
     AuthModule.forRoot(),
     SettingModule,
     DebuggerModule.forRoot(),
+    PolicyModule,
   ],
 })
 export class CommonModule {}
