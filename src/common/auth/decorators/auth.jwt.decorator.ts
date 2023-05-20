@@ -11,6 +11,7 @@ import { ENUM_ROLE_TYPE } from 'src/modules/role/constants/role.enum.constant';
 import { RolePayloadTypeGuard } from 'src/modules/role/guards/payload/role.payload.type.guard';
 import { UserPayloadSerialization } from 'src/modules/user/serializations/user.payload.serialization';
 import { AuthJwtAccessGuard } from '../guards/jwt-access/auth.jwt-access.guard';
+import { AuthJwtRefreshGuard } from '../guards/jwt-refresh/auth.jwt-refresh.guard';
 
 /**
  * @description get req.user
@@ -62,3 +63,16 @@ export function AuthJwtAdminAccessProtected(): MethodDecorator {
     ]),
   );
 }
+
+export const AuthJwtToken = createParamDecorator(
+  (_: string, ctx: ExecutionContext): string => {
+    const { headers } = ctx.switchToHttp().getRequest<IRequestApp>();
+    const { authorization } = headers;
+    const authorizations: string[] = authorization.split(' ');
+
+    return authorizations.length >= 2 ? authorizations[1] : undefined;
+  },
+);
+
+export const AuthJwtRefreshProtected = (): MethodDecorator =>
+  applyDecorators(UseGuards(AuthJwtRefreshGuard));

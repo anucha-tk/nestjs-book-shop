@@ -206,4 +206,14 @@ export class AuthService implements IAuthService {
       this.accessTokenEncryptIv,
     ) as Record<string, any>;
   }
+
+  async decryptRefreshToken({
+    data,
+  }: Record<string, any>): Promise<Record<string, any>> {
+    return this.helperEncryptionService.aes256Decrypt(
+      data,
+      this.refreshTokenEncryptKey,
+      this.refreshTokenEncryptIv,
+    ) as Record<string, any>;
+  }
 }
