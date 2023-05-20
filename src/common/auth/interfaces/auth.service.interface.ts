@@ -5,6 +5,7 @@ import {
 } from './auth.interface';
 
 export interface IAuthService {
+  createPasswordRandom(): Promise<string>;
   decryptRefreshToken(
     payload: Record<string, any>,
   ): Promise<Record<string, any>>;

@@ -14,7 +14,6 @@ import {
 } from 'class-validator';
 import { IsPasswordStrong } from 'src/common/request/validations/request.is-password-strong.validation';
 import { ENUM_USER_SIGN_UP_FROM } from '../constants/user.enum.constant';
-import { PasswordConfirmMatch } from '../validators/password-confirm.validator';
 
 export class UserCreateDto {
   @ApiProperty({
@@ -81,14 +80,6 @@ export class UserCreateDto {
     example: 'yo818QKSJP@@!123',
     required: true,
   })
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(6)
-  @MaxLength(30)
-  @Type(() => String)
-  @PasswordConfirmMatch('password', { message: 'Passwords do not match' })
-  passwordConfirm: string;
-
   @ApiProperty({
     example: faker.datatype.uuid(),
     required: true,

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { HelperDateService } from 'src/common/helper/services/helper.date.service';
 import { HelperEncryptionService } from 'src/common/helper/services/helper.encryption.service';
 import { HelperHashService } from 'src/common/helper/services/helper.hash.service';
+import { HelperStringService } from 'src/common/helper/services/helper.string.service';
 import {
   IAuthPassword,
   IAuthPayloadOptions,
@@ -34,6 +35,7 @@ export class AuthService implements IAuthService {
 
   constructor(
     private helperHashService: HelperHashService,
+    private readonly helperStringService: HelperStringService,
     private helperDateService: HelperDateService,
     private configService: ConfigService,
     private readonly helperEncryptionService: HelperEncryptionService,
@@ -215,5 +217,9 @@ export class AuthService implements IAuthService {
       this.refreshTokenEncryptKey,
       this.refreshTokenEncryptIv,
     ) as Record<string, any>;
+  }
+
+  async createPasswordRandom(): Promise<string> {
+    return this.helperStringService.random(15);
   }
 }

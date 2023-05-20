@@ -27,3 +27,10 @@ export interface IHelperJwtOptions extends IHelperJwtVerifyOptions {
 export interface IHelperDateOptionsForward {
   fromDate?: Date;
 }
+
+// Helper String
+export interface IHelperStringRandomOptions {
+  upperCase?: boolean;
+  safe?: boolean;
+  prefix?: string;
+}

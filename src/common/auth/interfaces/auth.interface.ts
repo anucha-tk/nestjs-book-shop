@@ -14,3 +14,11 @@ export interface IAuthPayloadOptions {
 export interface IAuthRefreshTokenOptions {
   notBeforeExpirationTime?: number | string;
 }
+
+export interface IAuthGooglePayload {
+  email: string;
+  firstName: string;
+  lastName: string;
+  accessToken: string;
+  refreshToken: string;
+}
